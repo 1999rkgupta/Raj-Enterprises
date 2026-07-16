@@ -1,0 +1,10 @@
+/* Admin Reports page CSS */
+
+.reports-page {
+  padding: var(--space-8) 0 var(--space-16);
+}
+
+.tab-container {
+  border-bottom: 1px solid var(--border-subtle);
+  gap: var(--space-2);
+}

@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "Raj Enterprises",
+    "slug": "raj-enterprises",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.rajenterprises.store"
+    },
+    "android": {
+      "package": "com.rajenterprises.store"
+    }
+  }
+}

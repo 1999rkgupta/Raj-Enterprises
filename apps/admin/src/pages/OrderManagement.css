@@ -1,0 +1,24 @@
+/* Admin Order Management Page CSS */
+
+.order-management-page {
+  padding: var(--space-8) 0 var(--space-16);
+}
+
+.filters-form {
+  border-radius: var(--radius-md);
+}
+
+.table-card {
+  border: 1px solid var(--border-subtle);
+}
+
+.drawer-section h3 {
+  font-size: var(--text-sm);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.cod-selection-box {
+  border-radius: var(--radius-md);
+}

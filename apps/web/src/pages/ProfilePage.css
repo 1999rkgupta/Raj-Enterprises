@@ -1,0 +1,53 @@
+/* ==================== Profile Page ==================== */
+
+.profile-page {
+  padding: var(--space-12) 0 var(--space-16);
+}
+
+.page-title {
+  margin-bottom: var(--space-8);
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.profile-info-card,
+.profile-addresses-card {
+  height: 100%;
+}
+
+.profile-info-card h2,
+.profile-addresses-card h2 {
+  font-size: var(--text-lg);
+  font-family: var(--font-display);
+}
+
+.address-item {
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.address-item:hover {
+  border-color: var(--color-primary-glow);
+  box-shadow: var(--shadow-sm);
+}
+
+.address-item-actions .btn-icon {
+  background: var(--bg-glass);
+}
+
+.address-item-actions .btn-icon:hover {
+  background: var(--bg-glass-hover);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}

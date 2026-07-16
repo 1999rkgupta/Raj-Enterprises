@@ -1,0 +1,19 @@
+/* Dashboard CSS styling */
+
+.dashboard-container {
+  padding: var(--space-8) 0 var(--space-16);
+}
+
+.stats-grid .card {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.sales-trends-chart-card h2 {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+
+.trends-svg {
+  padding: 10px;
+}

@@ -1,0 +1,303 @@
+/* Admin Panel — Uses same design tokens as web app */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --color-primary: #6C63FF;
+  --color-primary-light: #8B83FF;
+  --color-primary-dark: #4F46E5;
+  --color-primary-glow: rgba(108, 99, 255, 0.3);
+  --color-secondary: #FF6B9D;
+  --color-accent: #00D4AA;
+  --color-warning: #FFB74D;
+  --color-error: #FF5252;
+  --color-success: #4CAF50;
+  --color-info: #42A5F5;
+  --bg-primary: #0A0A0F;
+  --bg-secondary: #12121A;
+  --bg-tertiary: #1A1A2E;
+  --bg-card: rgba(26, 26, 46, 0.7);
+  --bg-glass: rgba(255, 255, 255, 0.04);
+  --bg-glass-hover: rgba(255, 255, 255, 0.08);
+  --text-primary: #EAEAEA;
+  --text-secondary: #A0A0B8;
+  --text-tertiary: #6B6B80;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.1);
+  --gradient-primary: linear-gradient(135deg, #6C63FF 0%, #FF6B9D 100%);
+  --gradient-card: linear-gradient(145deg, rgba(26, 26, 46, 0.8) 0%, rgba(18, 18, 26, 0.6) 100%);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px var(--color-primary-glow);
+  --font-primary: 'Inter', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+  --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem;
+  --text-xl: 1.25rem; --text-2xl: 1.5rem; --text-3xl: 1.875rem;
+  --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem;
+  --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem;
+  --space-12: 3rem; --space-16: 4rem;
+  --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px; --radius-xl: 24px; --radius-full: 9999px;
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --max-width: 1400px;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 16px; scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--font-primary); background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; min-height: 100vh; }
+a { color: var(--color-primary-light); text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; color: inherit; }
+
+.container { max-width: var(--max-width); margin: 0 auto; padding: 0 var(--space-6); }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 700; }
+
+.card {
+  background: var(--gradient-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  backdrop-filter: blur(20px);
+  transition: all var(--transition-base);
+}
+.card:hover { border-color: var(--border-default); box-shadow: var(--shadow-lg); }
+
+.badge {
+  display: inline-flex; align-items: center;
+  padding: var(--space-1) var(--space-3); border-radius: var(--radius-full);
+  font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.badge-primary { background: rgba(108, 99, 255, 0.15); color: var(--color-primary-light); }
+.badge-warning { background: rgba(255, 183, 77, 0.15); color: var(--color-warning); }
+.badge-success { background: rgba(76, 175, 80, 0.15); color: var(--color-success); }
+.badge-danger { background: rgba(255, 82, 82, 0.15); color: var(--color-error); }
+
+.text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ==================== Flexbox & Grid Layouts ==================== */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.flex-wrap { flex-wrap: wrap; }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+.gap-8 { gap: var(--space-8); }
+
+/* ==================== Buttons ==================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.btn:active { transform: scale(0.98); }
+
+.btn-primary {
+  background: var(--gradient-primary);
+  color: white;
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
+}
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(108, 99, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--bg-glass);
+  color: var(--text-primary);
+  border: 1px solid var(--border-default);
+  backdrop-filter: blur(10px);
+}
+.btn-secondary:hover {
+  background: var(--bg-glass-hover);
+  border-color: var(--border-strong);
+}
+
+.btn-danger {
+  background: var(--color-error);
+  color: white;
+}
+.btn-sm {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+  border-radius: var(--radius-sm);
+}
+
+/* ==================== Glassmorphism Cards ==================== */
+.card-glass {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(20px);
+}
+
+/* ==================== Sidebar Navigation Panel ==================== */
+.admin-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+}
+.logo-icon {
+  background: var(--gradient-primary);
+  color: white;
+  font-weight: 800;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-sm);
+}
+.logo-text {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  color: var(--text-primary);
+}
+
+/* ==================== Input Forms ==================== */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.input-group label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+.input {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  color: var(--text-primary);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: all var(--transition-fast);
+}
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px var(--color-primary-glow);
+}
+
+/* ==================== Tables ==================== */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.admin-table th, .admin-table td {
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: var(--text-sm);
+}
+.admin-table th {
+  background: rgba(255, 255, 255, 0.02);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-size: var(--text-xs);
+  letter-spacing: 0.05em;
+}
+.admin-table tbody tr {
+  transition: background var(--transition-fast);
+}
+.admin-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+.clickable-name {
+  color: var(--color-primary-light);
+  cursor: pointer;
+}
+.clickable-name:hover {
+  text-decoration: underline;
+}
+
+/* ==================== Drawer Overlay Panels ==================== */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  justify-content: flex-end;
+}
+.drawer-content {
+  width: 100%;
+  height: 100vh;
+  border-radius: 0 !important;
+  border-left: 1px solid var(--border-default) !important;
+  border-top: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  overflow-y: auto;
+  position: relative;
+}
+.drawer-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  font-size: var(--text-2xl);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+.drawer-close:hover {
+  color: var(--text-primary);
+}
+
+/* Text Colors */
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary { color: var(--text-tertiary); }
+.text-danger { color: var(--color-error); }
+
+/* ==================== Toast Styling ==================== */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  pointer-events: none;
+}
+.toast {
+  padding: var(--space-4) var(--space-6);
+  border-radius: var(--radius-md);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border-default);
+  box-shadow: var(--shadow-lg);
+  pointer-events: auto;
+  min-width: 300px;
+  font-size: var(--text-sm);
+  color: var(--text-primary);
+  animation: slideInRight 0.3s ease-out;
+}
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.toast-success { background: rgba(76, 175, 80, 0.15); border-color: rgba(76, 175, 80, 0.3); }
+.toast-error { background: rgba(255, 82, 82, 0.15); border-color: rgba(255, 82, 82, 0.3); }
+.toast-warning { background: rgba(255, 183, 77, 0.15); border-color: rgba(255, 183, 77, 0.3); }
+.toast-info { background: rgba(66, 165, 245, 0.15); border-color: rgba(66, 165, 245, 0.3); }

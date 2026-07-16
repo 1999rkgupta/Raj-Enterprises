@@ -1,0 +1,42 @@
+# Raj Enterprises — FastAPI Backend Dependencies
+
+# Core
+fastapi==0.115.0
+uvicorn[standard]==0.30.0
+pydantic==2.9.0
+pydantic-settings==2.5.0
+python-dotenv==1.0.1
+python-multipart==0.0.12
+
+# MongoDB
+motor==3.6.0
+pymongo==4.9.0
+
+# Firebase Admin SDK
+firebase-admin==6.5.0
+
+# Security & Auth
+python-jose[cryptography]==3.3.0
+
+# PDF Generation
+reportlab==4.2.0
+
+# Excel Generation
+openpyxl==3.1.5
+
+# Rate Limiting
+slowapi==0.1.9
+
+# HTTP
+httpx==0.27.0
+
+# Date/Time
+python-dateutil==2.9.0
+
+# Testing
+pytest==8.3.0
+pytest-asyncio==0.24.0
+httpx==0.27.0
+
+# Utilities
+Pillow==10.4.0

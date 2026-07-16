@@ -1,0 +1,33 @@
+# Raj Enterprises — Docker Compose
+# For local development: starts MongoDB
+
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: raj-enterprises-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=raj_enterprises
+    restart: unless-stopped
+
+  # Optional: Mongo Express for DB management UI
+  mongo-express:
+    image: mongo-express:latest
+    container_name: raj-enterprises-mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://mongodb:27017
+      - ME_CONFIG_BASICAUTH=false
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+    driver: local

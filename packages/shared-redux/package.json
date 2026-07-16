@@ -1,0 +1,24 @@
+{
+  "name": "@raj-enterprises/shared-redux",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.3.0",
+    "react-redux": "^9.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "@raj-enterprises/shared-types": "*",
+    "@raj-enterprises/api-client": "*",
+    "@types/react": "^18.3.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  }
+}

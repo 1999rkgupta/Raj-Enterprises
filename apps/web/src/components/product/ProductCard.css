@@ -1,0 +1,144 @@
+/* Product Card CSS */
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding: 0 !important;
+  text-decoration: none;
+  background: var(--gradient-card);
+}
+
+.product-card-image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 75%; /* 4:3 Aspect Ratio */
+  background: var(--bg-secondary);
+  overflow: hidden;
+}
+
+.product-card-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-base);
+}
+
+.product-card:hover .product-card-image {
+  transform: scale(1.05);
+}
+
+.product-card-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 3rem;
+  background: var(--bg-tertiary);
+}
+
+/* Wishlist Toggle */
+.wishlist-toggle-btn {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-3);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(10, 10, 15, 0.6);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  z-index: 2;
+  cursor: pointer;
+}
+
+.wishlist-toggle-btn:hover {
+  background: rgba(10, 10, 15, 0.8);
+  color: var(--color-secondary-light);
+  transform: scale(1.1);
+}
+
+.wishlist-toggle-btn.wishlisted {
+  color: var(--color-secondary);
+}
+
+/* Badges */
+.product-card-badges {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  z-index: 2;
+}
+
+.product-card-info {
+  padding: var(--space-4);
+  flex: 1;
+}
+
+.product-card-title {
+  font-size: var(--text-base);
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.product-card-desc {
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  height: 2.8em; /* 2 lines max */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.product-card-price {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-accent-light);
+}
+
+/* Stepper */
+.quantity-stepper {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: 2px;
+}
+
+.stepper-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg-glass);
+  font-weight: 700;
+}
+
+.stepper-btn:hover {
+  background: var(--bg-glass-hover);
+}
+
+.stepper-qty {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}

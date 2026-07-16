@@ -1,0 +1,62 @@
+/* Order History CSS */
+
+.order-history-page {
+  padding: var(--space-12) 0 var(--space-16);
+}
+
+.orders-history-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.order-list-item {
+  transition: all var(--transition-fast);
+}
+
+.order-list-item:hover {
+  border-color: var(--border-strong) !important;
+}
+
+.active-order {
+  border-color: var(--color-primary) !important;
+  background: rgba(108, 99, 255, 0.05) !important;
+  box-shadow: 0 0 12px var(--color-primary-glow);
+}
+
+.order-details-panel h2 {
+  font-size: var(--text-lg);
+  font-family: var(--font-display);
+}
+
+.details-section h3 {
+  font-size: var(--text-sm);
+  border-bottom: 1px solid var(--border-subtle);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+/* Timeline */
+.timeline-item::after {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 5px;
+  bottom: -22px;
+  width: 2px;
+  background: var(--border-subtle);
+  z-index: 1;
+}
+
+.timeline-item:last-child::after {
+  display: none;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .orders-history-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}

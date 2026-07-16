@@ -1,0 +1,51 @@
+/* Product Management CSS */
+
+.product-management-page {
+  padding: var(--space-8) 0 var(--space-16);
+}
+
+.filters-form {
+  border-radius: var(--radius-md);
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-overlay);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: var(--space-4);
+}
+
+.modal-content {
+  position: relative;
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow-xl);
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  font-size: 2rem;
+  color: var(--text-tertiary);
+  transition: color var(--transition-fast);
+}
+
+.modal-close:hover {
+  color: var(--text-primary);
+}
+
+/* File Upload details */
+.images-uploader-box {
+  transition: all var(--transition-fast);
+}
+
+.images-uploader-box:hover {
+  border-color: var(--color-primary) !important;
+  background: var(--bg-glass-hover);
+}

@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Build outputs
+dist/
+build/
+.next/
+*.tsbuildinfo
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Turbo
+.turbo/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+.pytest_cache/
+htmlcov/
+
+# Firebase
+firebase-debug.log
+.firebase/
+
+# Uploads (keep directory structure, ignore contents)
+apps/web/public/uploads/*
+apps/admin/public/uploads/*
+!apps/web/public/uploads/.gitkeep
+!apps/admin/public/uploads/.gitkeep
+
+# Mobile
+apps/mobile/.expo/
+apps/mobile/android/
+apps/mobile/ios/
+
+# Generated
+*.pdf
+*.xlsx

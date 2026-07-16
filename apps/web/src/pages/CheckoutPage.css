@@ -1,0 +1,41 @@
+/* Checkout Page CSS */
+
+.checkout-page {
+  padding: var(--space-12) 0 var(--space-16);
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.checkout-section h2 {
+  font-size: var(--text-lg);
+  font-family: var(--font-display);
+}
+
+/* Address card select */
+.address-selector-item {
+  transition: all var(--transition-fast);
+}
+
+.address-selector-item:hover {
+  border-color: var(--border-strong) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+.selected-address {
+  border-color: var(--color-primary) !important;
+  background: rgba(108, 99, 255, 0.05) !important;
+  box-shadow: 0 0 12px var(--color-primary-glow);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+}
