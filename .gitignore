@@ -45,6 +45,7 @@ htmlcov/
 # Firebase
 firebase-debug.log
 .firebase/
+firebase-service-account.json
 
 # Uploads (keep directory structure, ignore contents)
 apps/web/public/uploads/*

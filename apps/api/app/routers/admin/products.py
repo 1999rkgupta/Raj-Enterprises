@@ -244,7 +244,7 @@ async def upload_product_image(
     file: UploadFile = File(...),
     admin: dict = Depends(require_admin),
 ):
-    """Upload a product image. Returns the relative path."""
+    """Upload a product image. Returns the path or secure Cloudinary CDN URL."""
     # Validate file type
     allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
     if file.content_type not in allowed_types:
@@ -252,6 +252,31 @@ async def upload_product_image(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Invalid file type. Allowed: {', '.join(allowed_types)}",
         )
+
+    contents = await file.read()
+
+    # Cloudinary Integration
+    if settings.cloudinary_cloud_name and settings.cloudinary_api_key and settings.cloudinary_api_secret:
+        try:
+            import cloudinary
+            import cloudinary.uploader
+            
+            cloudinary.config(
+                cloud_name=settings.cloudinary_cloud_name,
+                api_key=settings.cloudinary_api_key,
+                api_secret=settings.cloudinary_api_secret,
+                secure=True
+            )
+            upload_result = cloudinary.uploader.upload(contents)
+            secure_url = upload_result.get("secure_url")
+            if secure_url:
+                return {
+                    "filename": file.filename or "uploaded_file",
+                    "relative_path": secure_url,
+                    "full_url": secure_url,
+                }
+        except Exception as ex:
+            logger.error(f"Cloudinary upload error, falling back to local storage: {ex}")
 
     # Generate unique filename
     ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
@@ -261,8 +286,7 @@ async def upload_product_image(
     # Ensure directory exists
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
 
-    # Save file
-    contents = await file.read()
+    # Save file locally
     with open(filepath, "wb") as f:
         f.write(contents)
 

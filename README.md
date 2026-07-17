@@ -63,6 +63,12 @@ API_HOST=0.0.0.0
 API_PORT=8000
 CORS_ORIGINS=["http://localhost:5173","http://localhost:5174"]
 FIREBASE_SERVICE_ACCOUNT_PATH=./firebase-service-account.json
+
+# --- Production Env overrides (Render dashboard config) ---
+# FIREBASE_CREDENTIALS_JSON=paste-raw-service-account-json-content-here
+# CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
+# CLOUDINARY_API_KEY=your-cloudinary-api-key
+# CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 ```
 
 #### Customer Web Settings (`apps/web/.env`)

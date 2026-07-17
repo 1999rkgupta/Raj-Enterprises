@@ -7,7 +7,7 @@ No hardcoded values. See .env.example for all available options.
 
 from pydantic_settings import BaseSettings
 from pydantic import Field
-from typing import List
+from typing import List, Optional
 import json
 
 
@@ -32,6 +32,11 @@ class Settings(BaseSettings):
     # --- Image Storage ---
     image_base_url: str = "http://localhost:5173/uploads"
     image_upload_dir: str = "../web/public/uploads"
+
+    # --- Cloudinary ---
+    cloudinary_cloud_name: Optional[str] = None
+    cloudinary_api_key: Optional[str] = None
+    cloudinary_api_secret: Optional[str] = None
 
     # --- Security ---
     max_admin_accounts: int = 5
