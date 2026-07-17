@@ -32,10 +32,17 @@ async def lifespan(app: FastAPI):
 
     # Initialize Firebase Admin SDK
     try:
-        if os.path.exists(settings.firebase_service_account_path):
+        firebase_json = os.environ.get("FIREBASE_CREDENTIALS_JSON")
+        if firebase_json:
+            import json
+            service_account_info = json.loads(firebase_json)
+            cred = credentials.Certificate(service_account_info)
+            firebase_admin.initialize_app(cred)
+            logger.info("Firebase Admin SDK initialized with credentials from environment variable")
+        elif os.path.exists(settings.firebase_service_account_path):
             cred = credentials.Certificate(settings.firebase_service_account_path)
             firebase_admin.initialize_app(cred)
-            logger.info("Firebase Admin SDK initialized with service account")
+            logger.info("Firebase Admin SDK initialized with service account file")
         else:
             # In development, allow running without Firebase credentials
             # (auth endpoints will fail, but other endpoints work)
@@ -52,7 +59,8 @@ async def lifespan(app: FastAPI):
                     pass  # Already initialized
             else:
                 raise FileNotFoundError(
-                    f"Firebase service account required in production: "
+                    f"Firebase service account required in production. Please set "
+                    f"FIREBASE_CREDENTIALS_JSON environment variable or configure "
                     f"{settings.firebase_service_account_path}"
                 )
     except Exception as e:
