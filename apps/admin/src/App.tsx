@@ -14,6 +14,7 @@ import UserManagement from './pages/UserManagement';
 import ProductManagement from './pages/ProductManagement';
 import OrderManagement from './pages/OrderManagement';
 import Reports from './pages/Reports';
+import NotFound from './pages/NotFound';
 
 // Layout UI components
 import ToastContainer from '../../web/src/components/ui/ToastContainer';
@@ -163,7 +164,7 @@ function App() {
           <Route path="/products" element={<ProductManagement />} />
           <Route path="/orders" element={<OrderManagement />} />
           <Route path="/reports" element={<Reports />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 

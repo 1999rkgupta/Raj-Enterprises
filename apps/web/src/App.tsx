@@ -23,6 +23,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import OrderHistory from './pages/OrderHistory';
 import ProfilePage from './pages/ProfilePage';
 import WishlistPage from './pages/WishlistPage';
+import NotFound from './pages/NotFound';
 
 // Layout
 import Navbar from './components/layout/Navbar';
@@ -159,7 +160,7 @@ function App() {
           <Route path="/wishlist" element={isAuthenticated ? <WishlistPage /> : <Navigate to="/" replace />} />
 
           {/* Fallback */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <ToastContainer />
