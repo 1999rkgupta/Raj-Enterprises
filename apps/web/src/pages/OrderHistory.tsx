@@ -116,7 +116,10 @@ export function OrderHistory() {
                     Placed on: {new Date(order.created_at).toLocaleDateString()}
                   </p>
                   <p className="text-secondary" style={{ fontSize: 'var(--text-sm)', marginTop: '4px', fontWeight: 600 }}>
-                    ₹{order.amount_total.toFixed(2)}
+                    Total: ₹{order.amount_total.toFixed(2)}
+                  </p>
+                  <p className="text-secondary" style={{ fontSize: '11px', marginTop: '2px', color: 'var(--text-tertiary)' }}>
+                    Paid: ₹{(order.amount_received || 0).toFixed(2)} | Due: ₹{Math.max(0, order.amount_total - (order.amount_received || 0)).toFixed(2)}
                   </p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
@@ -144,7 +147,7 @@ export function OrderHistory() {
                   </div>
                   
                   {/* Download invoice button */}
-                  {selectedOrder.order_status !== 'cancelled' && (
+                  {selectedOrder.order_status === 'delivered' && (
                     <button
                       className="btn btn-secondary btn-sm"
                       onClick={() => handleDownloadInvoice(selectedOrder.id, selectedOrder.order_number)}
