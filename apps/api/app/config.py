@@ -57,11 +57,23 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins_list(self) -> List[str]:
-        """Parse CORS origins from JSON string."""
+        """Parse CORS origins from JSON string or comma-separated list of URLs."""
+        raw = self.cors_origins.strip()
+        
+        # 1. Try to parse as valid JSON array
         try:
-            return json.loads(self.cors_origins)
-        except (json.JSONDecodeError, TypeError):
-            return ["http://localhost:5173", "http://localhost:5174"]
+            return json.loads(raw)
+        except Exception:
+            pass
+
+        # 2. Fallback: Clean square brackets, quotes, and split by comma
+        cleaned = raw.replace("[", "").replace("]", "").replace('"', "").replace("'", "")
+        origins = [item.strip() for item in cleaned.split(",") if item.strip()]
+        if origins:
+            return origins
+
+        # 3. Default fallback
+        return ["http://localhost:5173", "http://localhost:5174"]
 
     @property
     def is_production(self) -> bool:
