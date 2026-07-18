@@ -316,30 +316,60 @@ async def download_invoice(
         'TitleStyle',
         parent=styles['Heading1'],
         fontName='Helvetica-Bold',
-        fontSize=24,
-        textColor=colors.HexColor("#6C63FF"),
-        spaceAfter=12
+        fontSize=20,
+        textColor=colors.HexColor("#0F172A"),
+        spaceAfter=15,
+        alignment=1  # Centered
     )
     section_style = ParagraphStyle(
         'SectionStyle',
         parent=styles['Heading3'],
         fontName='Helvetica-Bold',
-        fontSize=12,
+        fontSize=11,
+        textColor=colors.HexColor("#0F172A"),
         spaceAfter=6
     )
     body_style = ParagraphStyle(
         'BodyStyle',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=10,
-        leading=14
+        fontSize=9,
+        leading=13,
+        textColor=colors.HexColor("#334155")
     )
 
-    # Title
-    story.append(Paragraph("Raj Enterprises — Invoice", title_style))
+    # 1. Company Header Details
+    company_data = [
+        [
+            Paragraph(f"<strong>{settings.company_name}</strong><br/>{settings.company_address}<br/>GST: {settings.company_gst}", body_style),
+            Paragraph(f"Email: {settings.company_email}<br/>Phone: {settings.company_phone}", body_style)
+        ]
+    ]
+    company_table = Table(company_data, colWidths=[270, 270])
+    company_table.setStyle(TableStyle([
+        ('ALIGN', (0,0), (0,-1), 'LEFT'),
+        ('ALIGN', (1,0), (1,-1), 'RIGHT'),
+        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+        ('TOPPADDING', (0,0), (-1,-1), 0),
+    ]))
+    story.append(company_table)
     story.append(Spacer(1, 10))
 
-    # Header Grid (Order Info & Bill To)
+    # Divider line
+    divider = Table([[""]], colWidths=[540])
+    divider.setStyle(TableStyle([
+        ('LINEBELOW', (0,0), (-1,-1), 1.5, colors.HexColor("#0F172A")),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+        ('TOPPADDING', (0,0), (-1,-1), 0),
+    ]))
+    story.append(divider)
+    story.append(Spacer(1, 10))
+
+    # 2. Document Title
+    story.append(Paragraph("INVOICE", title_style))
+
+    # 3. Header Grid (Order Info & Bill To)
     addr = order["delivery_address"]
     addr_line_2 = f", {addr['address_line_2']}" if addr.get("address_line_2") else ""
     landmark = f" (Landmark: {addr['landmark']})" if addr.get("landmark") else ""
@@ -356,12 +386,15 @@ async def download_invoice(
     header_table.setStyle(TableStyle([
         ('ALIGN', (0,0), (-1,-1), 'LEFT'),
         ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ('BOTTOMPADDING', (0,0), (-1,0), 6),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 8),
+        ('TOPPADDING', (0,0), (-1,-1), 8),
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#F8FAFC")),
+        ('BOX', (0,0), (-1,-1), 0.5, colors.HexColor("#E2E8F0")),
     ]))
     story.append(header_table)
     story.append(Spacer(1, 20))
 
-    # Items Table
+    # 4. Items Table
     story.append(Paragraph("<strong>Purchased Items</strong>", section_style))
     table_data = [["SKU", "Item Description", "Qty", "Unit Price", "Subtotal"]]
     
@@ -386,20 +419,32 @@ async def download_invoice(
     table_data.append(["", "", "", "Balance Due:", f"INR {max(0.0, order['amount_total'] - order.get('amount_received', 0.0)):.2f}"])
 
     items_table = Table(table_data, colWidths=[100, 200, 40, 100, 100])
-    items_table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#6C63FF")),
+    
+    # Dynamic table styling with zebra striping
+    items_table_style = [
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#0F172A")),
         ('TEXTCOLOR', (0,0), (-1,0), colors.white),
         ('ALIGN', (0,0), (-1,-1), 'LEFT'),
         ('ALIGN', (2,1), (-1,-1), 'RIGHT'),
         ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0,0), (-1,0), 10),
+        ('FONTSIZE', (0,0), (-1,0), 9),
         ('BOTTOMPADDING', (0,0), (-1,-1), 6),
         ('TOPPADDING', (0,0), (-1,-1), 6),
-        ('GRID', (0,0), (-1,-4), 0.5, colors.grey),
-        ('LINEBELOW', (-2,-3), (-1,-1), 1, colors.HexColor("#6C63FF")),
-        ('FONTNAME', (-2,-3), (-1,-1), 'Helvetica-Bold'),
-    ]))
+    ]
     
+    # Zebra striping for item rows (excluding headers and totals)
+    for i in range(1, len(table_data) - 3):
+        if i % 2 == 0:
+            items_table_style.append(('BACKGROUND', (0, i), (-1, i), colors.HexColor("#F8FAFC")))
+
+    # Lines and fonts config
+    items_table_style.extend([
+        ('LINEBELOW', (0,0), (-1,-4), 0.5, colors.HexColor("#E2E8F0")),
+        ('LINEBELOW', (-2,-3), (-1,-1), 1, colors.HexColor("#0F172A")),
+        ('FONTNAME', (-2,-3), (-1,-1), 'Helvetica-Bold'),
+    ])
+
+    items_table.setStyle(TableStyle(items_table_style))
     story.append(items_table)
 
     # Build PDF
