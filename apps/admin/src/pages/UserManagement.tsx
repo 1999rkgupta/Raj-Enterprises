@@ -74,6 +74,15 @@ export function UserManagement() {
   const [adminMobile, setAdminMobile] = useState('');
   const [submittingAdmin, setSubmittingAdmin] = useState(false);
 
+  // Edit Admin Form
+  const [showEditAdmin, setShowEditAdmin] = useState(false);
+  const [editingAdminId, setEditingAdminId] = useState('');
+  const [editAdminName, setEditAdminName] = useState('');
+  const [editAdminEmail, setEditAdminEmail] = useState('');
+  const [editAdminMobile, setEditAdminMobile] = useState('');
+  const [editAdminRole, setEditAdminRole] = useState('admin');
+  const [updatingAdminProfile, setUpdatingAdminProfile] = useState(false);
+
   // User detail overlay (drawer)
   const [selectedUser, setSelectedUser] = useState<CustomerUser | AdminUser | null>(null);
   const [userOrders, setUserOrders] = useState<UserOrder[]>([]);
@@ -273,6 +282,35 @@ export function UserManagement() {
       dispatch(showToast({ message: err.detail || 'Failed to create admin account.', type: 'error' }));
     } finally {
       setSubmittingAdmin(false);
+    }
+  };
+
+  const handleOpenEditAdminModal = (a: AdminUser) => {
+    setEditingAdminId(a.id);
+    setEditAdminName(a.name);
+    setEditAdminEmail(a.email || '');
+    setEditAdminMobile(a.mobile || '');
+    setEditAdminRole(a.role);
+    setShowEditAdmin(true);
+  };
+
+  const handleUpdateAdminProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUpdatingAdminProfile(true);
+    try {
+      await api.admin.updateAdminProfile(editingAdminId, {
+        name: editAdminName,
+        email: editAdminEmail || undefined,
+        mobile: editAdminMobile || undefined,
+        role: editAdminRole,
+      });
+      dispatch(showToast({ message: 'Admin profile updated successfully!', type: 'success' }));
+      setShowEditAdmin(false);
+      fetchAdmins();
+    } catch (err: any) {
+      dispatch(showToast({ message: err.detail || 'Failed to update admin profile.', type: 'error' }));
+    } finally {
+      setUpdatingAdminProfile(false);
     }
   };
 
@@ -509,12 +547,20 @@ export function UserManagement() {
                     {currentAdmin?.role === 'super_admin' && (
                       <td>
                         {a.role !== 'super_admin' && (
-                          <button
-                            className={`btn ${a.is_active ? 'btn-danger' : 'btn-primary'} btn-sm`}
-                            onClick={() => toggleUserStatus(a)}
-                          >
-                            {a.is_active ? 'Deactivate' : 'Activate'}
-                          </button>
+                          <div className="flex gap-2">
+                            <button
+                              className="btn btn-secondary btn-sm"
+                              onClick={() => handleOpenEditAdminModal(a)}
+                            >
+                              ✏️ Edit
+                            </button>
+                            <button
+                              className={`btn ${a.is_active ? 'btn-danger' : 'btn-primary'} btn-sm`}
+                              onClick={() => toggleUserStatus(a)}
+                            >
+                              {a.is_active ? 'Deactivate' : 'Activate'}
+                            </button>
+                          </div>
                         )}
                       </td>
                     )}
@@ -693,6 +739,74 @@ export function UserManagement() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Admin Modal */}
+      {showEditAdmin && (
+        <div className="modal-overlay" onClick={() => setShowEditAdmin(false)}>
+          <div className="modal-content card animate-scale-in" onClick={e => e.stopPropagation()} style={{ maxWidth: '500px', width: '100%' }}>
+            <button className="modal-close" onClick={() => setShowEditAdmin(false)}>&times;</button>
+            <h2>Edit Administrator</h2>
+            <form onSubmit={handleUpdateAdminProfile} className="flex flex-col gap-4" style={{ marginTop: 'var(--space-4)' }}>
+              <div className="input-group">
+                <label htmlFor="edit-adm-name">Full Name</label>
+                <input
+                  type="text"
+                  id="edit-adm-name"
+                  className="input"
+                  value={editAdminName}
+                  onChange={e => setEditAdminName(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="input-group">
+                <label htmlFor="edit-adm-email">Email Address</label>
+                <input
+                  type="email"
+                  id="edit-adm-email"
+                  className="input"
+                  value={editAdminEmail}
+                  onChange={e => setEditAdminEmail(e.target.value)}
+                />
+              </div>
+
+              <div className="input-group">
+                <label htmlFor="edit-adm-mobile">Mobile Phone</label>
+                <input
+                  type="text"
+                  id="edit-adm-mobile"
+                  className="input"
+                  value={editAdminMobile}
+                  onChange={e => setEditAdminMobile(e.target.value)}
+                />
+              </div>
+
+              <div className="input-group">
+                <label htmlFor="edit-adm-role">Role</label>
+                <select
+                  id="edit-adm-role"
+                  className="input"
+                  value={editAdminRole}
+                  onChange={e => setEditAdminRole(e.target.value)}
+                  style={{ background: 'var(--bg-secondary)' }}
+                >
+                  <option value="admin">Admin</option>
+                  <option value="super_admin">Super Admin</option>
+                </select>
+              </div>
+
+              <div className="flex gap-4" style={{ marginTop: 'var(--space-4)' }}>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={updatingAdminProfile}>
+                  {updatingAdminProfile ? 'Updating...' : 'Save Changes'}
+                </button>
+                <button type="button" className="btn btn-secondary" onClick={() => setShowEditAdmin(false)}>
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

@@ -262,3 +262,45 @@ async def get_user_orders(
         "page_size": page_size,
         "has_more": (page * page_size) < total,
     }
+
+
+@router.put("/{user_id}/profile")
+async def update_user_profile_admin(
+    user_id: str,
+    data: dict,
+    admin: dict = Depends(require_super_admin),
+):
+    """Allow super admin to edit the profile/role of another user (e.g. admin)."""
+    if not ObjectId.is_valid(user_id):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid user ID.")
+
+    update_fields = {}
+    if "name" in data:
+        update_fields["name"] = data["name"]
+    if "email" in data:
+        update_fields["email"] = data["email"]
+    if "mobile" in data:
+        update_fields["mobile"] = data["mobile"]
+    if "role" in data:
+        update_fields["role"] = data["role"]
+    if "shop_name" in data:
+        update_fields["shop_name"] = data["shop_name"]
+
+    if not update_fields:
+        return {"message": "No changes made"}
+
+    update_fields["updated_at"] = datetime.now(timezone.utc)
+
+    await database.users.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": update_fields}
+    )
+
+    await audit_log(
+        action="update_user_profile_admin",
+        performed_by=admin["_id"],
+        target_type="user",
+        target_id=ObjectId(user_id),
+    )
+
+    return {"message": "User profile updated successfully"}
