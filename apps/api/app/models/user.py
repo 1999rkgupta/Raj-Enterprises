@@ -85,6 +85,13 @@ class UserResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
+    @field_validator("mobile", mode="before")
+    @classmethod
+    def coerce_mobile_to_string(cls, v):
+        if v is not None and not isinstance(v, str):
+            return str(v)
+        return v
+
 
 class UserAdminResponse(UserResponse):
     """Extended user response for admin views."""
