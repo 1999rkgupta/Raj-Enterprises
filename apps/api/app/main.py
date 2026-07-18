@@ -29,6 +29,7 @@ async def lifespan(app: FastAPI):
     """Application startup and shutdown lifecycle."""
     # --- Startup ---
     logger.info(f"Starting {settings.app_name} ({settings.app_env})")
+    logger.info(f"CORS origins configured: {settings.cors_origins_list}")
 
     # Initialize Firebase Admin SDK
     try:
