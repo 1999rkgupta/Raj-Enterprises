@@ -15,6 +15,7 @@ import ProductManagement from './pages/ProductManagement';
 import OrderManagement from './pages/OrderManagement';
 import Reports from './pages/Reports';
 import NotFound from './pages/NotFound';
+import Profile from './pages/Profile';
 
 // Layout UI components
 import ToastContainer from '../../web/src/components/ui/ToastContainer';
@@ -146,7 +147,9 @@ function App() {
 
           <div className="sidebar-footer flex flex-col gap-4">
             <div style={{ fontSize: 'var(--text-xs)' }}>
-              <p className="text-secondary" style={{ fontWeight: 600 }}>{user?.name}</p>
+              <Link to="/profile" className="text-secondary" style={{ fontWeight: 600, display: 'block', textDecoration: 'none' }}>
+                👤 {user?.name}
+              </Link>
               <p className="text-tertiary" style={{ textTransform: 'capitalize' }}>{user?.role.replace('_', ' ')}</p>
             </div>
             <button className="btn btn-secondary btn-sm" onClick={handleLogout} style={{ width: '100%' }}>
@@ -164,6 +167,7 @@ function App() {
           <Route path="/products" element={<ProductManagement />} />
           <Route path="/orders" element={<OrderManagement />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

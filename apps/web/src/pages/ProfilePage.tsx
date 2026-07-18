@@ -34,6 +34,24 @@ export function ProfilePage() {
 
   if (!user) return null;
 
+  const [uploadingImage, setUploadingImage] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const res = await api.users.uploadProfileImage(file);
+      dispatch(setUser({ ...user, profile_image_url: res.profile_image_url }));
+      dispatch(showToast({ message: 'Profile picture updated!', type: 'success' }));
+    } catch (err: any) {
+      dispatch(showToast({ message: err.detail || 'Failed to upload image.', type: 'error' }));
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setUpdatingProfile(true);
@@ -140,7 +158,25 @@ export function ProfilePage() {
         {/* Profile Card */}
         <div className="card profile-info-card">
           <h2>Account Information</h2>
-          <form onSubmit={handleUpdateProfile} className="flex flex-col gap-4" style={{ marginTop: 'var(--space-6)' }}>
+          <div className="flex flex-col items-center gap-4" style={{ marginBottom: 'var(--space-6)', marginTop: 'var(--space-4)' }}>
+            <div className="profile-pic-container" style={{ position: 'relative', width: '100px', height: '100px' }}>
+              <img
+                src={user.profile_image_url || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}
+                alt="Profile"
+                style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border-subtle)' }}
+              />
+              {uploadingImage && (
+                <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: 'var(--text-xs)' }}>
+                  Loading...
+                </div>
+              )}
+            </div>
+            <label className="btn btn-secondary btn-sm" style={{ cursor: 'pointer' }}>
+              📷 {uploadingImage ? 'Uploading...' : 'Change Picture'}
+              <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} disabled={uploadingImage} />
+            </label>
+          </div>
+          <form onSubmit={handleUpdateProfile} className="flex flex-col gap-4">
             <div className="input-group">
               <label htmlFor="p-name">Full Name</label>
               <input

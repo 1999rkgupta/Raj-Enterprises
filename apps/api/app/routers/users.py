@@ -4,12 +4,15 @@ Raj Enterprises — Users Router
 User profile management endpoints.
 """
 
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File
 from datetime import datetime, timezone
+import uuid
+import os
 from bson import ObjectId
 from app.database import database
 from app.dependencies import get_current_user
 from app.models.user import UserUpdate, UserResponse, AddressUpdate
+from app.config import settings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -170,3 +173,60 @@ async def delete_address(
     )
 
     return {"message": "Address deleted successfully"}
+
+
+@router.post("/profile-image")
+async def upload_profile_image(
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user),
+):
+    """Upload a profile image. Returns secure URL."""
+    allowed_types = ["image/jpeg", "image/png", "image/webp", "image/gif"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid file type. Allowed: {', '.join(allowed_types)}",
+        )
+
+    contents = await file.read()
+
+    # Cloudinary Integration
+    if settings.cloudinary_cloud_name and settings.cloudinary_api_key and settings.cloudinary_api_secret:
+        try:
+            import cloudinary
+            import cloudinary.uploader
+            
+            cloudinary.config(
+                cloud_name=settings.cloudinary_cloud_name,
+                api_key=settings.cloudinary_api_key,
+                api_secret=settings.cloudinary_api_secret,
+                secure=True
+            )
+            upload_result = cloudinary.uploader.upload(contents)
+            secure_url = upload_result.get("secure_url")
+            if secure_url:
+                # Update user profile image url in MongoDB directly
+                await database.users.update_one(
+                    {"_id": current_user["_id"]},
+                    {"$set": {"profile_image_url": secure_url}}
+                )
+                return {"profile_image_url": secure_url}
+        except Exception as ex:
+            logger.error(f"Cloudinary upload error, falling back to local storage: {ex}")
+
+    # Local fallback
+    ext = file.filename.split(".")[-1] if "." in file.filename else "jpg"
+    filename = f"profile_{current_user['_id']}_{uuid.uuid4().hex[:6]}.{ext}"
+    filepath = os.path.join(settings.image_upload_dir, "profiles", filename)
+
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)
+
+    with open(filepath, "wb") as f:
+        f.write(contents)
+
+    full_url = f"{settings.image_base_url}/profiles/{filename}"
+    await database.users.update_one(
+        {"_id": current_user["_id"]},
+        {"$set": {"profile_image_url": full_url}}
+    )
+    return {"profile_image_url": full_url}

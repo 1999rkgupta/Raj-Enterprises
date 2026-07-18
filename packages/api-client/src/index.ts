@@ -88,6 +88,14 @@ export function createApiClient(config: ApiClientConfig) {
       updateProfile: (data: UserUpdateRequest) =>
         client.put<User>('/api/users/profile', data).then(r => r.data),
 
+      uploadProfileImage: (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        return client.post<{ profile_image_url: string }>('/api/users/profile-image', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }).then(r => r.data);
+      },
+
       addAddress: (data: AddressRequest) =>
         client.post<MessageResponse>('/api/users/addresses', data).then(r => r.data),
 
@@ -173,6 +181,9 @@ export function createApiClient(config: ApiClientConfig) {
 
       createAdmin: (data: { firebase_uid: string; name: string; email?: string; mobile?: string }) =>
         client.post('/api/admin/users/create-admin', data).then(r => r.data),
+
+      updateAdminProfile: (userId: string, data: { name?: string; email?: string; mobile?: string; role?: string }) =>
+        client.put<MessageResponse>(`/api/admin/users/${userId}/profile`, data).then(r => r.data),
 
       deactivateUser: (userId: string) =>
         client.put(`/api/admin/users/${userId}/deactivate`).then(r => r.data),
