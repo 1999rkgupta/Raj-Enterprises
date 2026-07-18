@@ -161,6 +161,8 @@ async def get_current_user(
     # Check session inactivity timeout
     last_active = user.get("last_active_at")
     if last_active:
+        if last_active.tzinfo is None:
+            last_active = last_active.replace(tzinfo=timezone.utc)
         inactive_days = (datetime.now(timezone.utc) - last_active).days
         if inactive_days >= settings.session_inactivity_days:
             raise HTTPException(
