@@ -307,6 +307,12 @@ async def download_invoice(
     if not order:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found.")
 
+    if current_user.get("role") not in ("admin", "super_admin") and order.get("order_status") != "delivered":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Invoices can only be downloaded once the order has been delivered."
+        )
+
     buffer = io.BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=letter, rightMargin=36, leftMargin=36, topMargin=36, bottomMargin=36)
     story = []
