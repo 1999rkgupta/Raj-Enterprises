@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
@@ -27,8 +27,22 @@ import NotFound from './pages/NotFound';
 
 // Layout
 import Navbar from './components/layout/Navbar';
+import Footer from './components/layout/Footer';
 import ToastContainer from './components/ui/ToastContainer';
 import LoginModal from './components/auth/LoginModal';
+
+// Scroll to top automatically on route changes
+function ScrollToTop() {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    }
+  }, [pathname, hash]);
+
+  return null;
+}
 
 function App() {
   const dispatch = useDispatch();
@@ -147,6 +161,7 @@ function App() {
 
   return (
     <div className="app">
+      <ScrollToTop />
       <Navbar onOpenLogin={() => setIsLoginOpen(true)} />
       <main className="main-content">
         <Routes>
@@ -163,6 +178,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
+      <Footer onOpenLogin={() => setIsLoginOpen(true)} />
       <ToastContainer />
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
     </div>

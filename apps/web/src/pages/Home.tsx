@@ -110,17 +110,17 @@ export function Home({ onOpenLogin }: HomeProps) {
         </div>
         <div className="container hero-content animate-fade-in-up">
           <div className="hero-text">
-            <span className="hero-badge badge badge-primary">Factory Direct Prices</span>
+            <span className="hero-badge badge badge-primary">Factory Direct Manufacturer</span>
             <h1 className="hero-title">
-              Transform Your Space with <span className="text-gradient">Premium Paints</span>
+              Leading Manufacturer of <span className="text-gradient">Paints, Hardware & Chemicals</span>
             </h1>
             <p className="hero-description">
-              Raj Enterprises brings you factory-fresh paints, wood finishes, primers, 
-              and professional tools — delivered straight to your doorstep at unbeatable prices.
+              Raj Enterprises is a premier manufacturer and wholesale supplier of high-performance paints,
+              precision hardware parts, and speciality chemical formulations — delivered direct from our factory.
             </p>
             <div className="hero-actions">
               <button className="btn btn-primary btn-lg" id="hero-shop-btn" onClick={handleShopNow}>
-                Shop Now
+                Explore Products
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
@@ -134,18 +134,18 @@ export function Home({ onOpenLogin }: HomeProps) {
           </div>
           <div className="hero-stats">
             <div className="hero-stat">
-              <span className="hero-stat-value">500+</span>
+              <span className="hero-stat-value">100+</span>
               <span className="hero-stat-label">Products</span>
             </div>
             <div className="hero-stat-divider" />
             <div className="hero-stat">
-              <span className="hero-stat-value">10K+</span>
-              <span className="hero-stat-label">Happy Customers</span>
+              <span className="hero-stat-value">1K+</span>
+              <span className="hero-stat-label">Clients Served</span>
             </div>
             <div className="hero-stat-divider" />
             <div className="hero-stat">
-              <span className="hero-stat-value">15+</span>
-              <span className="hero-stat-label">Years Experience</span>
+              <span className="hero-stat-value">10+</span>
+              <span className="hero-stat-label">Years Manufacturing</span>
             </div>
           </div>
         </div>
@@ -156,9 +156,9 @@ export function Home({ onOpenLogin }: HomeProps) {
         <div className="catalog-header flex justify-between items-center" id="catalog-header" style={{ marginBottom: 'var(--space-8)' }}>
           <div>
             <h2 className="section-title" style={{ textAlign: 'left', marginBottom: 'var(--space-1)' }}>Explore Our Catalog</h2>
-            <p className="text-secondary" style={{ fontSize: 'var(--text-sm)' }}>Premium coatings directly from the manufacturer</p>
+            <p className="text-secondary" style={{ fontSize: 'var(--text-sm)' }}>Paints, Hardware Parts & Chemical Solutions Direct from Factory</p>
           </div>
-          
+
           {/* Direct Search Bar */}
           <div className="catalog-search card-glass" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', padding: 'var(--space-2) var(--space-4)', borderRadius: 'var(--radius-full)', border: '1px solid var(--border-default)', width: '320px' }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-tertiary">
@@ -212,10 +212,10 @@ export function Home({ onOpenLogin }: HomeProps) {
           </div>
         ) : products.length === 0 ? (
           <div className="flex justify-center items-center flex-col card-glass" style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
-            <span style={{ fontSize: '3rem' }}>🎨</span>
+            <span style={{ fontSize: '3rem' }}>📦</span>
             <h3 style={{ marginTop: 'var(--space-4)' }}>No products found</h3>
             <p className="text-secondary" style={{ maxWidth: '400px', fontSize: 'var(--text-sm)', marginTop: 'var(--space-2)' }}>
-              We couldn't find any paints matching your filters. Try selecting a different category or refining your search.
+              We couldn't find any products matching your filters. Try selecting a different category or refining your search.
             </p>
           </div>
         ) : (
@@ -228,8 +228,8 @@ export function Home({ onOpenLogin }: HomeProps) {
 
             {/* Pagination trigger */}
             {hasMore && (
-              <div className="flex justify-center" style={{ marginTop: 'var(--space-10)' }}>
-                <button className="btn btn-secondary btn-lg" onClick={handleLoadMore} disabled={isLoading}>
+              <div className="flex justify-center load-more-container" style={{ marginTop: 'var(--space-8)' }}>
+                <button className="btn btn-secondary load-more-btn" onClick={handleLoadMore} disabled={isLoading}>
                   {isLoading ? 'Loading catalog...' : 'Load More Products'}
                 </button>
               </div>

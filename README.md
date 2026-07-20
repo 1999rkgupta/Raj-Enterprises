@@ -73,7 +73,7 @@ FIREBASE_SERVICE_ACCOUNT_PATH=./firebase-service-account.json
 
 #### Customer Web Settings (`apps/web/.env`)
 ```ini
-VITE_API_BASE_URL=http://localhost:8000
+VITE_API_BASE_URL=https://raj-enterprises-api.onrender.com
 VITE_FIREBASE_API_KEY=your-api-key
 VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=your-project-id
@@ -84,7 +84,7 @@ VITE_FIREBASE_APP_ID=1:123:web:abc
 
 #### Admin Console Settings (`apps/admin/.env`)
 ```ini
-VITE_API_BASE_URL=http://localhost:8000
+VITE_API_BASE_URL=https://raj-enterprises-api.onrender.com
 VITE_FIREBASE_API_KEY=your-api-key
 VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=your-project-id

@@ -143,7 +143,13 @@ export function ProductCard({ product, onOpenLogin }: ProductCardProps) {
         {product.images && product.images.length > 0 ? (
           <img src={product.images[0]} alt={product.title} className="product-card-image" loading="lazy" />
         ) : (
-          <div className="product-card-placeholder flex justify-center items-center">🎨</div>
+          <div className="product-card-placeholder flex justify-center items-center">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+              <line x1="12" y1="22.08" x2="12" y2="12" />
+            </svg>
+          </div>
         )}
         
         {/* Wishlist Toggle Button */}
@@ -167,34 +173,39 @@ export function ProductCard({ product, onOpenLogin }: ProductCardProps) {
         </div>
       </div>
 
-      <div className="product-card-info flex flex-col gap-2">
+      <div className="product-card-info">
         <h3 className="product-card-title">{product.title}</h3>
-        <p className="product-card-desc text-secondary">{product.description}</p>
+        <p className="product-card-desc">{product.description}</p>
         
-        <div className="product-card-footer flex justify-between items-center" style={{ marginTop: 'auto', paddingTop: 'var(--space-2)' }}>
-          <span className="product-card-price">₹{product.price.toFixed(2)}</span>
+        <div className="product-card-footer">
+          <div className="product-card-price-row">
+            <span className="product-card-price">₹{product.price.toFixed(2)}</span>
+            {cartQuantity > 0 && (
+              <span className="cart-badge-qty">{cartQuantity} in cart</span>
+            )}
+          </div>
 
           {product.in_stock ? (
-            <div className="product-card-actions flex gap-2" onClick={e => e.preventDefault()}>
+            <div className="product-card-actions" onClick={e => e.preventDefault()}>
               {cartQuantity > 0 ? (
-                <div className="quantity-stepper flex items-center gap-2 card-glass">
-                  <button className="stepper-btn" onClick={e => handleUpdateQuantity(e, cartQuantity - 1)}>-</button>
+                <div className="quantity-stepper">
+                  <button className="stepper-btn" onClick={e => handleUpdateQuantity(e, cartQuantity - 1)} aria-label="Decrease quantity">-</button>
                   <span className="stepper-qty">{cartQuantity}</span>
-                  <button className="stepper-btn" onClick={e => handleUpdateQuantity(e, cartQuantity + 1)}>+</button>
+                  <button className="stepper-btn" onClick={e => handleUpdateQuantity(e, cartQuantity + 1)} aria-label="Increase quantity">+</button>
                 </div>
               ) : (
-                <>
-                  <button className="btn btn-secondary btn-sm" onClick={handleAddToCart}>
+                <div className="product-card-btn-group">
+                  <button className="btn btn-secondary btn-sm btn-add-cart" onClick={handleAddToCart}>
                     Add to Cart
                   </button>
-                  <button className="btn btn-primary btn-sm" onClick={handleBuyNow}>
+                  <button className="btn btn-primary btn-sm btn-buy-now" onClick={handleBuyNow}>
                     Buy Now
                   </button>
-                </>
+                </div>
               )}
             </div>
           ) : (
-            <span className="text-tertiary" style={{ fontSize: 'var(--text-xs)' }}>Unavailable</span>
+            <span className="text-tertiary out-of-stock-text">Unavailable</span>
           )}
         </div>
       </div>
