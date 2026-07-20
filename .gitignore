@@ -37,10 +37,11 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Testing
+# Testings
 coverage/
 .pytest_cache/
 htmlcov/
+package-lock.json
 
 # Firebase
 firebase-debug.log

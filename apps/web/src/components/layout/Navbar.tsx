@@ -175,57 +175,31 @@ function Navbar({ onOpenLogin }: NavbarProps) {
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
-        <div className="mobile-nav-drawer animate-fade-in" id="mobile-nav-drawer">
-          <div className="mobile-nav-links flex flex-col gap-2">
-            <Link to="/" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)}>
-              <span>🏠 Home</span>
-            </Link>
-            <Link to="/cart" className="mobile-nav-item flex justify-between items-center" onClick={() => setIsMobileMenuOpen(false)}>
-              <span>🛒 Cart</span>
-              {cartCount > 0 && <span className="cart-badge" style={{ position: 'relative', top: 'auto', right: 'auto' }}>{cartCount}</span>}
-            </Link>
-            <Link to="/wishlist" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)}>
-              <span>❤️ Wishlist</span>
-            </Link>
-
-            {isAuthenticated ? (
-              <>
-                <Link to="/orders" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)}>
-                  <span>📦 Order History</span>
-                </Link>
-                <Link to="/profile" className="mobile-nav-item" onClick={() => setIsMobileMenuOpen(false)}>
-                  <span>👤 My Profile</span>
-                </Link>
-                <div className="profile-dropdown-divider" style={{ margin: '8px 0' }} />
-                <button
-                  className="mobile-nav-item mobile-logout-btn"
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    handleLogout();
-                  }}
-                >
-                  🚪 Logout ({user?.name || 'User'})
+        <>
+          <div className="navbar-mobile-menu" id="navbar-mobile-menu">
+            <div className="mobile-menu-inner">
+              <Link to="/" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>🏠 Home</Link>
+              <Link to="/cart" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>🛒 Cart ({cartCount})</Link>
+              <Link to="/wishlist" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>❤️ Wishlist</Link>
+              {isAuthenticated ? (
+                <>
+                  <Link to="/orders" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>📦 Order History</Link>
+                  <Link to="/profile" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>👤 My Profile</Link>
+                  <button className="mobile-menu-link mobile-menu-logout" onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}>
+                    🚪 Logout ({user?.name || 'User'})
+                  </button>
+                </>
+              ) : (
+                <button className="mobile-menu-link btn-primary-mobile" onClick={() => { setIsMobileMenuOpen(false); onOpenLogin(); }}>
+                  🔑 Sign In / Register
                 </button>
-              </>
-            ) : (
-              <>
-                <div className="profile-dropdown-divider" style={{ margin: '8px 0' }} />
-                <button
-                  className="btn btn-primary"
-                  style={{ width: '100%', marginTop: '8px', padding: '12px', justifyContent: 'center' }}
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    onOpenLogin();
-                  }}
-                >
-                  Sign In / Register
-                </button>
-              </>
-            )}
+              )}
+            </div>
           </div>
-        </div>
+          <div className="navbar-mobile-backdrop" onClick={() => setIsMobileMenuOpen(false)} />
+        </>
       )}
     </nav>
   );

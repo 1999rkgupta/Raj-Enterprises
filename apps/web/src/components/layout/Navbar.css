@@ -279,42 +279,72 @@
   }
 }
 
-/* Mobile Drawer */
-.mobile-nav-drawer {
+/* Mobile Menu Dropdown Styles */
+.navbar-mobile-menu {
   position: absolute;
   top: var(--navbar-height);
   left: 0;
   right: 0;
-  background: rgba(18, 18, 26, 0.98);
-  backdrop-filter: blur(25px);
+  background: #12121A !important; /* Solid background to prevent behind-screen overlapping */
   border-bottom: 1px solid var(--border-default);
+  z-index: 99999;
   padding: var(--space-4) var(--space-6);
-  box-shadow: var(--shadow-xl);
-  z-index: 999;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9);
+  animation: slideDown 0.3s ease-out;
 }
 
-.mobile-nav-item {
+@keyframes slideDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.mobile-menu-inner {
   display: flex;
-  align-items: center;
-  padding: var(--space-3) var(--space-4);
-  color: var(--text-primary);
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mobile-menu-link {
+  color: var(--text-secondary);
   font-size: var(--text-base);
-  font-weight: 600;
-  border-radius: var(--radius-md);
+  font-weight: 500;
   text-decoration: none;
-  background: var(--bg-glass);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
   transition: all var(--transition-fast);
-  cursor: pointer;
+  display: block;
+  text-align: left;
   border: none;
-}
-
-.mobile-nav-item:hover, .mobile-nav-item:active {
-  background: var(--bg-glass-hover);
-  color: var(--color-primary-light);
-}
-
-.mobile-logout-btn {
-  color: var(--color-error);
+  background: transparent;
   width: 100%;
 }
 
+.mobile-menu-link:hover {
+  background: var(--bg-glass-hover);
+  color: var(--text-primary);
+}
+
+.mobile-menu-logout {
+  color: var(--color-error) !important;
+}
+
+.btn-primary-mobile {
+  background: var(--gradient-primary);
+  color: white !important;
+  text-align: center;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: var(--space-2);
+}
+
+.navbar-mobile-backdrop {
+  position: fixed;
+  top: var(--navbar-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 99998;
+  animation: fadeIn 0.2s ease-out;
+}

@@ -56,6 +56,7 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; }
   padding: var(--space-6);
   backdrop-filter: blur(20px);
   transition: all var(--transition-base);
+  overflow-x: auto;
 }
 .card:hover { border-color: var(--border-default); box-shadow: var(--shadow-lg); }
 
@@ -146,6 +147,11 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; }
   backdrop-filter: blur(20px);
 }
 
+.admin-app {
+  display: flex;
+  flex-direction: row;
+}
+
 /* ==================== Sidebar Navigation Panel ==================== */
 .admin-sidebar {
   display: flex;
@@ -153,7 +159,10 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; }
   height: 100vh;
   position: sticky;
   top: 0;
+  z-index: 1000;
+  transition: transform var(--transition-base);
 }
+
 .logo-icon {
   background: var(--gradient-primary);
   color: white;
@@ -171,6 +180,65 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; }
   font-size: var(--text-lg);
   color: var(--text-primary);
 }
+
+/* Mobile responsive navigation styling */
+.admin-mobile-header {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  padding: 0 var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-subtle);
+  z-index: 999;
+}
+
+.sidebar-toggle-btn {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  padding: var(--space-2);
+  cursor: pointer;
+}
+
+.sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 998;
+}
+
+@media (max-width: 768px) {
+  .admin-app {
+    flex-direction: column;
+  }
+
+  .admin-mobile-header {
+    display: flex;
+  }
+
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-xl);
+    height: 100vh;
+  }
+
+  .admin-sidebar.sidebar-open {
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    padding-top: calc(60px + var(--space-6)) !important;
+  }
+}
+
 
 /* ==================== Input Forms ==================== */
 .input-group {
@@ -297,7 +365,115 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; }
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }
+/* Ensure tables don't squash and can scroll horizontally */
+.admin-table {
+  min-width: 750px;
+}
+
+/* Responsive UI Helpers */
+@media (max-width: 768px) {
+  /* Flex containers that should stack on mobile */
+  .flex.justify-between.items-center,
+  [id$="-header"].flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: var(--space-4);
+  }
+
+  [id$="-header"].flex .flex {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .filters-form,
+  form.flex {
+    flex-direction: column;
+    gap: var(--space-3) !important;
+  }
+
+  .filters-form input,
+  .filters-form select,
+  .filters-form button,
+  form.flex input,
+  form.flex select,
+  form.flex button {
+    width: 100% !important;
+    flex: none !important;
+  }
+
+  /* Drawer panel responsiveness */
+  .drawer-overlay .drawer-content {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
 .toast-success { background: rgba(76, 175, 80, 0.15); border-color: rgba(76, 175, 80, 0.3); }
 .toast-error { background: rgba(255, 82, 82, 0.15); border-color: rgba(255, 82, 82, 0.3); }
 .toast-warning { background: rgba(255, 183, 77, 0.15); border-color: rgba(255, 183, 77, 0.3); }
 .toast-info { background: rgba(66, 165, 245, 0.15); border-color: rgba(66, 165, 245, 0.3); }
+
+/* ==================== Animations & Page Transitions ==================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-base) ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--transition-base) ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn var(--transition-base) cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Page mount transition globally applied to main content and pages */
+.dashboard-container,
+.user-management-page,
+.product-management-page,
+.order-management-page,
+.reports-page,
+.admin-login-container,
+.profile-page {
+  animation: fadeIn var(--transition-base) ease-out;
+}
+
+/* Premium Card hover lifts and glows */
+.card {
+  transition: all var(--transition-base) !important;
+}
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary-light) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), var(--shadow-glow) !important;
+}
+
+/* Button Micro-animations */
+.btn {
+  transition: all var(--transition-base) !important;
+}
+.btn:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn-primary:hover {
+  box-shadow: 0 8px 24px rgba(108, 99, 255, 0.3);
+}
+
+
