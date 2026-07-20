@@ -12,6 +12,7 @@ import {
 } from '@raj-enterprises/shared-redux';
 import { api } from '../../utils/api';
 import { guestCartDB } from '../../utils/indexeddb';
+import { motion } from 'framer-motion';
 import './ProductCard.css';
 
 interface ProductCardProps {
@@ -138,67 +139,85 @@ export function ProductCard({ product, onOpenLogin }: ProductCardProps) {
   };
 
   return (
-    <Link to={`/product/${product.id}`} className="product-card card animate-fade-in">
-      <div className="product-card-image-wrapper">
-        {product.images && product.images.length > 0 ? (
-          <img src={product.images[0]} alt={product.title} className="product-card-image" loading="lazy" />
-        ) : (
-          <div className="product-card-placeholder flex justify-center items-center">🎨</div>
-        )}
-        
-        {/* Wishlist Toggle Button */}
-        <button
-          className={`wishlist-toggle-btn ${isWishlisted ? 'wishlisted' : ''}`}
-          onClick={handleWishlistToggle}
-          title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
-        >
-          <svg viewBox="0 0 24 24" width="18" height="18" fill={isWishlisted ? 'var(--color-secondary)' : 'none'} stroke="currentColor" strokeWidth="2">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-          </svg>
-        </button>
+    <motion.div
+      whileHover={{ y: -6, scale: 1.015 }}
+      whileTap={{ scale: 0.985 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      style={{ height: '100%', width: '100%', display: 'flex' }}
+    >
+      <Link to={`/product/${product.id}`} className="product-card card" style={{ width: '100%' }}>
+        <div className="product-card-image-wrapper">
+          {product.images && product.images.length > 0 ? (
+            <img src={product.images[0]} alt={product.title} className="product-card-image" loading="lazy" />
+          ) : (
+            <div className="product-card-placeholder flex justify-center items-center">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                <line x1="12" y1="22.08" x2="12" y2="12" />
+              </svg>
+            </div>
+          )}
+          
+          {/* Wishlist Toggle Button */}
+          <button
+            className={`wishlist-toggle-btn ${isWishlisted ? 'wishlisted' : ''}`}
+            onClick={handleWishlistToggle}
+            title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill={isWishlisted ? 'var(--color-secondary)' : 'none'} stroke="currentColor" strokeWidth="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+            </svg>
+          </button>
 
-        {/* Stock Status Badges */}
-        <div className="product-card-badges">
-          {!product.in_stock ? (
-            <span className="badge badge-danger">Out of Stock</span>
-          ) : product.is_low_stock ? (
-            <span className="badge badge-warning">Few Left</span>
-          ) : null}
+          {/* Stock Status Badges */}
+          <div className="product-card-badges">
+            {!product.in_stock ? (
+              <span className="badge badge-danger">Out of Stock</span>
+            ) : product.is_low_stock ? (
+              <span className="badge badge-warning">Few Left</span>
+            ) : null}
+          </div>
         </div>
-      </div>
 
-      <div className="product-card-info flex flex-col gap-2">
-        <h3 className="product-card-title">{product.title}</h3>
-        <p className="product-card-desc text-secondary">{product.description}</p>
-        
-        <div className="product-card-footer flex justify-between items-center" style={{ marginTop: 'auto', paddingTop: 'var(--space-2)' }}>
-          <span className="product-card-price">₹{product.price.toFixed(2)}</span>
-
-          {product.in_stock ? (
-            <div className="product-card-actions flex gap-2" onClick={e => e.preventDefault()}>
-              {cartQuantity > 0 ? (
-                <div className="quantity-stepper flex items-center gap-2 card-glass">
-                  <button className="stepper-btn" onClick={e => handleUpdateQuantity(e, cartQuantity - 1)}>-</button>
-                  <span className="stepper-qty">{cartQuantity}</span>
-                  <button className="stepper-btn" onClick={e => handleUpdateQuantity(e, cartQuantity + 1)}>+</button>
-                </div>
-              ) : (
-                <>
-                  <button className="btn btn-secondary btn-sm" onClick={handleAddToCart}>
-                    Add to Cart
-                  </button>
-                  <button className="btn btn-primary btn-sm" onClick={handleBuyNow}>
-                    Buy Now
-                  </button>
-                </>
+        <div className="product-card-info">
+          <h3 className="product-card-title">{product.title}</h3>
+          <p className="product-card-desc">{product.description}</p>
+          
+          <div className="product-card-footer">
+            <div className="product-card-price-row">
+              <span className="product-card-price">₹{product.price.toFixed(2)}</span>
+              {cartQuantity > 0 && (
+                <span className="cart-badge-qty">{cartQuantity} in cart</span>
               )}
             </div>
-          ) : (
-            <span className="text-tertiary" style={{ fontSize: 'var(--text-xs)' }}>Unavailable</span>
-          )}
+
+            {product.in_stock ? (
+              <div className="product-card-actions" onClick={e => e.preventDefault()}>
+                {cartQuantity > 0 ? (
+                  <div className="quantity-stepper">
+                    <button className="stepper-btn" onClick={e => handleUpdateQuantity(e, cartQuantity - 1)} aria-label="Decrease quantity">-</button>
+                    <span className="stepper-qty">{cartQuantity}</span>
+                    <button className="stepper-btn" onClick={e => handleUpdateQuantity(e, cartQuantity + 1)} aria-label="Increase quantity">+</button>
+                  </div>
+                ) : (
+                  <div className="product-card-btn-group">
+                    <button className="btn btn-secondary btn-sm btn-add-cart" onClick={handleAddToCart}>
+                      Add to Cart
+                    </button>
+                    <button className="btn btn-primary btn-sm btn-buy-now" onClick={handleBuyNow}>
+                      Buy Now
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <span className="text-tertiary out-of-stock-text">Unavailable</span>
+            )}
+          </div>
         </div>
-      </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 }
 export default ProductCard;

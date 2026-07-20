@@ -10,6 +10,8 @@ import {
 } from '@raj-enterprises/shared-redux';
 import { api } from '../utils/api';
 import ProductCard from '../components/product/ProductCard';
+import ScrollReveal from '../components/ui/ScrollReveal';
+import PageTransition from '../components/ui/PageTransition';
 import './Home.css';
 
 interface HomeProps {
@@ -29,14 +31,14 @@ export function Home({ onOpenLogin }: HomeProps) {
   const navigate = useNavigate();
 
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const { products, total, page, hasMore, isLoading, categories } = useSelector(
+  const { products, isLoading, categories } = useSelector(
     (state: RootState) => state.products
   );
 
-  // Local filters state (mirrored from/to Redux to orchestrate fetch calls)
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [activePage, setActivePage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
 
   // Fetch Categories
   const fetchCategories = async () => {
@@ -59,6 +61,7 @@ export function Home({ onOpenLogin }: HomeProps) {
         search: search || undefined,
       });
 
+      setHasMore(res.has_more);
       dispatch(
         setProducts({
           products: res.products,
@@ -80,7 +83,6 @@ export function Home({ onOpenLogin }: HomeProps) {
   }, []);
 
   useEffect(() => {
-    // Initial fetch or filter change reset
     setActivePage(1);
     fetchProductsList(1, selectedCat, searchQuery, false);
   }, [selectedCat, searchQuery]);
@@ -100,7 +102,7 @@ export function Home({ onOpenLogin }: HomeProps) {
   };
 
   return (
-    <div className="home-page" id="home-page">
+    <PageTransition className="home-page" id="home-page">
       {/* Hero Section */}
       <section className="hero" id="hero-section">
         <div className="hero-bg-effects">
@@ -108,93 +110,110 @@ export function Home({ onOpenLogin }: HomeProps) {
           <div className="hero-orb hero-orb-2" />
           <div className="hero-orb hero-orb-3" />
         </div>
-        <div className="container hero-content animate-fade-in-up">
-          <div className="hero-text">
-            <span className="hero-badge badge badge-primary">Factory Direct Prices</span>
-            <h1 className="hero-title">
-              Transform Your Space with <span className="text-gradient">Premium Paints</span>
-            </h1>
-            <p className="hero-description">
-              Raj Enterprises brings you factory-fresh paints, wood finishes, primers, 
-              and professional tools — delivered straight to your doorstep at unbeatable prices.
-            </p>
-            <div className="hero-actions">
-              <button className="btn btn-primary btn-lg" id="hero-shop-btn" onClick={handleShopNow}>
-                Shop Now
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </button>
-              <button className="btn btn-secondary btn-lg" id="hero-catalog-btn" onClick={() => {
-                document.getElementById('catalog-header')?.scrollIntoView({ behavior: 'smooth' });
-              }}>
-                View Catalog
-              </button>
+        <div className="container hero-content">
+          <ScrollReveal direction="up" delay={0.1}>
+            <div className="hero-text">
+              <span className="hero-badge badge badge-primary">Factory Direct Manufacturer</span>
+              <h1 className="hero-title">
+                Leading Manufacturer of <span className="text-gradient">Paints, Hardware & Chemicals</span>
+              </h1>
+              <p className="hero-description">
+                Raj Enterprises is a premier manufacturer and wholesale supplier of high-performance paints,
+                precision hardware parts, and speciality chemical formulations — delivered direct from our factory.
+              </p>
+              <div className="hero-actions">
+                <button className="btn btn-primary btn-lg" id="hero-shop-btn" onClick={handleShopNow}>
+                  Explore Products
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </button>
+                <button className="btn btn-secondary btn-lg" id="hero-catalog-btn" onClick={() => {
+                  document.getElementById('catalog-header')?.scrollIntoView({ behavior: 'smooth' });
+                }}>
+                  View Catalog
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="hero-stats">
-            <div className="hero-stat">
-              <span className="hero-stat-value">500+</span>
-              <span className="hero-stat-label">Products</span>
+          </ScrollReveal>
+
+          <ScrollReveal direction="up" delay={0.25}>
+            <div className="hero-stats">
+              <div className="hero-stat">
+                <span className="hero-stat-value">100+</span>
+                <span className="hero-stat-label">Products</span>
+              </div>
+              <div className="hero-stat-divider" />
+              <div className="hero-stat">
+                <span className="hero-stat-value">1K+</span>
+                <span className="hero-stat-label">Clients Served</span>
+              </div>
+              <div className="hero-stat-divider" />
+              <div className="hero-stat">
+                <span className="hero-stat-value">10+</span>
+                <span className="hero-stat-label">Years Manufacturing</span>
+              </div>
             </div>
-            <div className="hero-stat-divider" />
-            <div className="hero-stat">
-              <span className="hero-stat-value">10K+</span>
-              <span className="hero-stat-label">Happy Customers</span>
-            </div>
-            <div className="hero-stat-divider" />
-            <div className="hero-stat">
-              <span className="hero-stat-value">15+</span>
-              <span className="hero-stat-label">Years Experience</span>
-            </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Catalog & Shop Section */}
       <section className="catalog-section container" id="catalog-section">
-        <div className="catalog-header flex justify-between items-center" id="catalog-header" style={{ marginBottom: 'var(--space-8)' }}>
-          <div>
-            <h2 className="section-title" style={{ textAlign: 'left', marginBottom: 'var(--space-1)' }}>Explore Our Catalog</h2>
-            <p className="text-secondary" style={{ fontSize: 'var(--text-sm)' }}>Premium coatings directly from the manufacturer</p>
+        <ScrollReveal direction="up" delay={0.1}>
+          <div className="catalog-header" id="catalog-header">
+            <div className="catalog-title-group">
+              <div className="catalog-badge-row">
+                <span className="badge badge-primary">Direct Factory Inventory</span>
+              </div>
+              <h2 className="catalog-title">
+                Explore Our <span className="text-gradient">Catalog</span>
+              </h2>
+              <p className="catalog-subtitle">High-Performance Paints, Precision Hardware Parts & Chemical Solutions</p>
+            </div>
+
+            {/* Sleek Glass Search Bar */}
+            <div className="catalog-search" id="catalog-search">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21l-4.35-4.35" />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search products by name or category..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="catalog-search-input"
+              />
+              {searchQuery && (
+                <button className="clear-search-btn" onClick={() => setSearchQuery('')} title="Clear search">✕</button>
+              )}
+            </div>
           </div>
-          
-          {/* Direct Search Bar */}
-          <div className="catalog-search card-glass" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', padding: 'var(--space-2) var(--space-4)', borderRadius: 'var(--radius-full)', border: '1px solid var(--border-default)', width: '320px' }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-tertiary">
-              <circle cx="11" cy="11" r="8" />
-              <path d="M21 21l-4.35-4.35" />
-            </svg>
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              style={{ border: 'none', outline: 'none', width: '100%', fontSize: 'var(--text-sm)' }}
-            />
-          </div>
-        </div>
+        </ScrollReveal>
 
         {/* Category Filter Chips */}
-        <div className="category-chips flex gap-2" style={{ overflowX: 'auto', paddingBottom: 'var(--space-4)', marginBottom: 'var(--space-6)' }}>
-          <button
-            className={`chip btn-secondary btn-sm ${selectedCat === null ? 'active-chip' : ''}`}
-            onClick={() => setSelectedCat(null)}
-            style={{ borderRadius: 'var(--radius-full)' }}
-          >
-            All Products
-          </button>
-          {categories.map((cat: any) => (
+        <ScrollReveal direction="up" delay={0.15}>
+          <div className="category-chips flex gap-2" style={{ overflowX: 'auto', paddingBottom: 'var(--space-3)', marginBottom: 'var(--space-6)' }}>
             <button
-              key={cat.id}
-              className={`chip btn-secondary btn-sm ${selectedCat === cat.id ? 'active-chip' : ''}`}
-              onClick={() => setSelectedCat(cat.id)}
+              className={`chip btn-secondary btn-sm ${selectedCat === null ? 'active-chip' : ''}`}
+              onClick={() => setSelectedCat(null)}
               style={{ borderRadius: 'var(--radius-full)' }}
             >
-              {cat.name}
+              All Products
             </button>
-          ))}
-        </div>
+            {categories.map((cat: any) => (
+              <button
+                key={cat.id}
+                className={`chip btn-secondary btn-sm ${selectedCat === cat.id ? 'active-chip' : ''}`}
+                onClick={() => setSelectedCat(cat.id)}
+                style={{ borderRadius: 'var(--radius-full)' }}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        </ScrollReveal>
 
         {/* Products Grid */}
         {isLoading && products.length === 0 ? (
@@ -212,10 +231,10 @@ export function Home({ onOpenLogin }: HomeProps) {
           </div>
         ) : products.length === 0 ? (
           <div className="flex justify-center items-center flex-col card-glass" style={{ padding: 'var(--space-12)', textAlign: 'center' }}>
-            <span style={{ fontSize: '3rem' }}>🎨</span>
+            <span style={{ fontSize: '3rem' }}>📦</span>
             <h3 style={{ marginTop: 'var(--space-4)' }}>No products found</h3>
             <p className="text-secondary" style={{ maxWidth: '400px', fontSize: 'var(--text-sm)', marginTop: 'var(--space-2)' }}>
-              We couldn't find any paints matching your filters. Try selecting a different category or refining your search.
+              We couldn't find any products matching your filters. Try selecting a different category or refining your search.
             </p>
           </div>
         ) : (
@@ -228,8 +247,8 @@ export function Home({ onOpenLogin }: HomeProps) {
 
             {/* Pagination trigger */}
             {hasMore && (
-              <div className="flex justify-center" style={{ marginTop: 'var(--space-10)' }}>
-                <button className="btn btn-secondary btn-lg" onClick={handleLoadMore} disabled={isLoading}>
+              <div className="flex justify-center load-more-container" style={{ marginTop: 'var(--space-8)' }}>
+                <button className="btn btn-secondary load-more-btn" onClick={handleLoadMore} disabled={isLoading}>
                   {isLoading ? 'Loading catalog...' : 'Load More Products'}
                 </button>
               </div>
@@ -237,7 +256,7 @@ export function Home({ onOpenLogin }: HomeProps) {
           </>
         )}
       </section>
-    </div>
+    </PageTransition>
   );
 }
 

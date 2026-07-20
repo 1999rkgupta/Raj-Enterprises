@@ -56,6 +56,18 @@ function Navbar({ onOpenLogin }: NavbarProps) {
     navigate('/');
   };
 
+  const handleWishlistClick = (e: React.MouseEvent) => {
+    if (!isAuthenticated) {
+      e.preventDefault();
+      setIsProfileOpen(false);
+      setIsMobileMenuOpen(false);
+      onOpenLogin();
+    } else {
+      setIsProfileOpen(false);
+      setIsMobileMenuOpen(false);
+    }
+  };
+
   return (
     <nav className="navbar" id="main-navbar">
       <div className="navbar-inner container">
@@ -94,7 +106,7 @@ function Navbar({ onOpenLogin }: NavbarProps) {
           </Link>
 
           {/* Wishlist */}
-          <Link to="/wishlist" className="navbar-action-btn" id="navbar-wishlist-btn" title="Wishlist">
+          <Link to="/wishlist" className="navbar-action-btn" id="navbar-wishlist-btn" title="Wishlist" onClick={handleWishlistClick}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
             </svg>
@@ -127,7 +139,7 @@ function Navbar({ onOpenLogin }: NavbarProps) {
                     <Link to="/cart" className="profile-dropdown-item" onClick={() => setIsProfileOpen(false)}>
                       🛒 Cart
                     </Link>
-                    <Link to="/wishlist" className="profile-dropdown-item" onClick={() => setIsProfileOpen(false)}>
+                    <Link to="/wishlist" className="profile-dropdown-item" onClick={handleWishlistClick}>
                       ❤️ Wishlist
                     </Link>
                     <Link to="/orders" className="profile-dropdown-item" onClick={() => setIsProfileOpen(false)}>
@@ -178,19 +190,23 @@ function Navbar({ onOpenLogin }: NavbarProps) {
       {/* Mobile Menu Dropdown */}
       {isMobileMenuOpen && (
         <>
-          <div className="navbar-mobile-menu animate-slide-down">
+          <div className="navbar-mobile-menu" id="navbar-mobile-menu">
             <div className="mobile-menu-inner">
               <Link to="/" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>🏠 Home</Link>
               <Link to="/cart" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>🛒 Cart ({cartCount})</Link>
-              <Link to="/wishlist" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>❤️ Wishlist</Link>
+              <Link to="/wishlist" className="mobile-menu-link" onClick={handleWishlistClick}>❤️ Wishlist</Link>
               {isAuthenticated ? (
                 <>
                   <Link to="/orders" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>📦 Order History</Link>
-                  <Link to="/profile" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>👤 Edit Profile</Link>
-                  <button className="mobile-menu-link mobile-menu-logout" onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}>🚪 Logout</button>
+                  <Link to="/profile" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>👤 My Profile</Link>
+                  <button className="mobile-menu-link mobile-menu-logout" onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}>
+                    🚪 Logout ({user?.name || 'User'})
+                  </button>
                 </>
               ) : (
-                <button className="mobile-menu-link btn-primary-mobile" onClick={() => { setIsMobileMenuOpen(false); onOpenLogin(); }}>🔑 Sign In</button>
+                <button className="mobile-menu-link btn-primary-mobile" onClick={() => { setIsMobileMenuOpen(false); onOpenLogin(); }}>
+                  🔑 Sign In / Register
+                </button>
               )}
             </div>
           </div>
