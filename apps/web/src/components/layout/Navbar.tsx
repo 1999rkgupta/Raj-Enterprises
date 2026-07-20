@@ -174,6 +174,29 @@ function Navbar({ onOpenLogin }: NavbarProps) {
           </button>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && (
+        <>
+          <div className="navbar-mobile-menu animate-slide-down">
+            <div className="mobile-menu-inner">
+              <Link to="/" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>🏠 Home</Link>
+              <Link to="/cart" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>🛒 Cart ({cartCount})</Link>
+              <Link to="/wishlist" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>❤️ Wishlist</Link>
+              {isAuthenticated ? (
+                <>
+                  <Link to="/orders" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>📦 Order History</Link>
+                  <Link to="/profile" className="mobile-menu-link" onClick={() => setIsMobileMenuOpen(false)}>👤 Edit Profile</Link>
+                  <button className="mobile-menu-link mobile-menu-logout" onClick={() => { setIsMobileMenuOpen(false); handleLogout(); }}>🚪 Logout</button>
+                </>
+              ) : (
+                <button className="mobile-menu-link btn-primary-mobile" onClick={() => { setIsMobileMenuOpen(false); onOpenLogin(); }}>🔑 Sign In</button>
+              )}
+            </div>
+          </div>
+          <div className="navbar-mobile-backdrop" onClick={() => setIsMobileMenuOpen(false)} />
+        </>
+      )}
     </nav>
   );
 }

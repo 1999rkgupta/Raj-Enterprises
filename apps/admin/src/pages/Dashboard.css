@@ -17,3 +17,10 @@
 .trends-svg {
   padding: 10px;
 }
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: var(--space-2) 0 var(--space-8);
+  }
+}
+

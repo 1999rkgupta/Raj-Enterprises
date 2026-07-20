@@ -468,6 +468,36 @@ h5 { font-size: var(--text-lg); }
   animation: scaleIn var(--transition-spring);
 }
 
+/* Premium Card hover lifts and glows */
+.card, .product-card {
+  transition: all var(--transition-base) !important;
+}
+.card:hover, .product-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary-light) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), var(--shadow-glow) !important;
+}
+
+/* Micro-animations for buttons */
+.btn {
+  transition: all var(--transition-base) !important;
+}
+.btn:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+.btn:active {
+  transform: scale(0.98);
+}
+.btn-primary:hover {
+  box-shadow: 0 8px 24px rgba(108, 99, 255, 0.4);
+}
+
+/* Automatic Page Transitions */
+.home-page, .product-detail-page, .cart-page, .checkout-page, .order-history-page, .profile-page, .wishlist-page {
+  animation: fadeIn var(--transition-slow) ease-out;
+}
+
+
 /* Skeleton loading */
 .skeleton {
   background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-card) 50%, var(--bg-tertiary) 75%);

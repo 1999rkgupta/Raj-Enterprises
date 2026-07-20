@@ -26,6 +26,8 @@ function App() {
   const location = useLocation();
   const { isAuthenticated, isLoading, user } = useSelector((state: RootState) => state.auth);
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   // Sync token getter interceptor with Mock Auth
   useEffect(() => {
     const mockTokenInterceptor = api.raw.interceptors.request.use((config) => {
@@ -105,6 +107,11 @@ function App() {
     navigate('/login');
   };
 
+  // Close sidebar on route change
+  useEffect(() => {
+    setIsSidebarOpen(false);
+  }, [location.pathname]);
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center" style={{ minHeight: '100vh', background: 'var(--bg-primary)' }}>
@@ -119,44 +126,61 @@ function App() {
   }
 
   return (
-    <div className="admin-app" style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-primary)' }}>
+    <div className={`admin-app ${isSidebarOpen ? 'sidebar-expanded' : ''}`} style={{ minHeight: '100vh', background: 'var(--bg-primary)' }}>
       {isAuthenticated && (
-        <aside className="admin-sidebar card-glass" style={{ width: 'var(--sidebar-width)', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-8)', borderRight: '1px solid var(--border-subtle)', borderRadius: 0 }}>
-          <div className="logo flex items-center gap-3">
-            <div className="logo-icon">RE</div>
-            <span className="logo-text" style={{ fontWeight: 700 }}>Admin Panel</span>
-          </div>
-
-          <nav className="flex flex-col gap-2" style={{ flex: 1 }}>
-            <Link to="/" className={`btn btn-secondary ${location.pathname === '/' ? 'btn-primary' : ''}`} style={{ justifyContent: 'flex-start' }}>
-              📊 Dashboard
-            </Link>
-            <Link to="/users" className={`btn btn-secondary ${location.pathname === '/users' ? 'btn-primary' : ''}`} style={{ justifyContent: 'flex-start' }}>
-              👥 User Management
-            </Link>
-            <Link to="/products" className={`btn btn-secondary ${location.pathname === '/products' ? 'btn-primary' : ''}`} style={{ justifyContent: 'flex-start' }}>
-              📦 Product Catalog
-            </Link>
-            <Link to="/orders" className={`btn btn-secondary ${location.pathname === '/orders' ? 'btn-primary' : ''}`} style={{ justifyContent: 'flex-start' }}>
-              🛒 Order History
-            </Link>
-            <Link to="/reports" className={`btn btn-secondary ${location.pathname === '/reports' ? 'btn-primary' : ''}`} style={{ justifyContent: 'flex-start' }}>
-              📈 Reports
-            </Link>
-          </nav>
-
-          <div className="sidebar-footer flex flex-col gap-4">
-            <div style={{ fontSize: 'var(--text-xs)' }}>
-              <Link to="/profile" className="text-secondary" style={{ fontWeight: 600, display: 'block', textDecoration: 'none' }}>
-                👤 {user?.name}
-              </Link>
-              <p className="text-tertiary" style={{ textTransform: 'capitalize' }}>{user?.role.replace('_', ' ')}</p>
-            </div>
-            <button className="btn btn-secondary btn-sm" onClick={handleLogout} style={{ width: '100%' }}>
-              🚪 Log Out
+        <>
+          {/* Mobile Top Header */}
+          <header className="admin-mobile-header card-glass">
+            <button className="sidebar-toggle-btn" onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-label="Toggle Navigation">
+              ☰
             </button>
-          </div>
-        </aside>
+            <div className="logo flex items-center gap-3">
+              <div className="logo-icon" style={{ width: '28px', height: '28px', fontSize: 'var(--text-xs)' }}>RE</div>
+              <span className="logo-text" style={{ fontWeight: 700, fontSize: 'var(--text-sm)' }}>Admin Panel</span>
+            </div>
+          </header>
+
+          {/* Sidebar */}
+          <aside className={`admin-sidebar card-glass ${isSidebarOpen ? 'sidebar-open' : ''}`} style={{ width: 'var(--sidebar-width)', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-8)', borderRight: '1px solid var(--border-subtle)', borderRadius: 0 }}>
+            <div className="logo flex items-center gap-3">
+              <div className="logo-icon">RE</div>
+              <span className="logo-text" style={{ fontWeight: 700 }}>Admin Panel</span>
+            </div>
+
+            <nav className="flex flex-col gap-2" style={{ flex: 1 }}>
+              <Link to="/" className={`btn btn-secondary ${location.pathname === '/' ? 'btn-primary' : ''}`} style={{ justifyContent: 'flex-start' }}>
+                📊 Dashboard
+              </Link>
+              <Link to="/users" className={`btn btn-secondary ${location.pathname === '/users' ? 'btn-primary' : ''}`} style={{ justifyContent: 'flex-start' }}>
+                👥 User Management
+              </Link>
+              <Link to="/products" className={`btn btn-secondary ${location.pathname === '/products' ? 'btn-primary' : ''}`} style={{ justifyContent: 'flex-start' }}>
+                📦 Product Catalog
+              </Link>
+              <Link to="/orders" className={`btn btn-secondary ${location.pathname === '/orders' ? 'btn-primary' : ''}`} style={{ justifyContent: 'flex-start' }}>
+                🛒 Order History
+              </Link>
+              <Link to="/reports" className={`btn btn-secondary ${location.pathname === '/reports' ? 'btn-primary' : ''}`} style={{ justifyContent: 'flex-start' }}>
+                📈 Reports
+              </Link>
+            </nav>
+
+            <div className="sidebar-footer flex flex-col gap-4">
+              <div style={{ fontSize: 'var(--text-xs)' }}>
+                <Link to="/profile" className="text-secondary" style={{ fontWeight: 600, display: 'block', textDecoration: 'none' }}>
+                  👤 {user?.name}
+                </Link>
+                <p className="text-tertiary" style={{ textTransform: 'capitalize' }}>{user?.role.replace('_', ' ')}</p>
+              </div>
+              <button className="btn btn-secondary btn-sm" onClick={handleLogout} style={{ width: '100%' }}>
+                🚪 Log Out
+              </button>
+            </div>
+          </aside>
+
+          {/* Sidebar Backdrop Overlay on Mobile */}
+          {isSidebarOpen && <div className="sidebar-backdrop" onClick={() => setIsSidebarOpen(false)} />}
+        </>
       )}
 
       <main className="admin-main" style={{ flex: 1, padding: 'var(--space-6)', overflowY: 'auto' }}>
