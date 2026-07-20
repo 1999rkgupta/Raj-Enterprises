@@ -5,6 +5,7 @@ import { api } from '../utils/api';
 import type { RootState } from '../store/store';
 import { clearCart, setCart, showToast, setUser } from '@raj-enterprises/shared-redux';
 import type { DeliveryAddress } from '@raj-enterprises/shared-types';
+import PageTransition from '../components/ui/PageTransition';
 import './CheckoutPage.css';
 
 export function CheckoutPage() {
@@ -119,7 +120,7 @@ export function CheckoutPage() {
   };
 
   return (
-    <div className="container checkout-page animate-fade-in" id="checkout-page">
+    <PageTransition className="container checkout-page animate-fade-in" id="checkout-page">
       <h1 className="page-title text-gradient">Checkout</h1>
 
       <div className="checkout-grid" style={{ marginTop: 'var(--space-6)' }}>
@@ -297,7 +298,7 @@ export function CheckoutPage() {
 
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }
 export default CheckoutPage;
