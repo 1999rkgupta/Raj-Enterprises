@@ -12,6 +12,7 @@ import {
   addGuestItem,
   updateGuestItem,
 } from '@raj-enterprises/shared-redux';
+import PageTransition from '../components/ui/PageTransition';
 import './ProductPage.css';
 
 export function ProductPage() {
@@ -149,7 +150,7 @@ export function ProductPage() {
   };
 
   return (
-    <div className="container product-detail-page animate-fade-in" id="product-detail-page">
+    <PageTransition className="container product-detail-page animate-fade-in" id="product-detail-page">
       {/* Breadcrumbs */}
       <nav className="breadcrumbs text-secondary" style={{ marginBottom: 'var(--space-6)', fontSize: 'var(--text-sm)' }}>
         <Link to="/">Catalog</Link> &gt; <span>{product.category_name || 'Product'}</span>
@@ -162,7 +163,13 @@ export function ProductPage() {
             {selectedImage ? (
               <img src={selectedImage} alt={product.title} className="main-product-image" />
             ) : (
-              <div className="placeholder-icon">🎨</div>
+              <div className="placeholder-icon flex justify-center items-center">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                  <line x1="12" y1="22.08" x2="12" y2="12" />
+                </svg>
+              </div>
             )}
           </div>
           
@@ -247,7 +254,7 @@ export function ProductPage() {
           )}
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }
 export default ProductPage;
