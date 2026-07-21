@@ -9,6 +9,7 @@ import {
   setCart,
   addGuestItem,
   updateGuestItem,
+  removeGuestItem,
 } from '@raj-enterprises/shared-redux';
 import { api } from '../../utils/api';
 import { guestCartDB } from '../../utils/indexeddb';
@@ -66,22 +67,50 @@ export function ProductCard({ product, onOpenLogin }: ProductCardProps) {
     }
 
     if (isAuthenticated) {
+      if (cart) {
+        const existingItem = cart.items.find(i => i.product_id === product.id);
+        let updatedItems;
+        if (existingItem) {
+          updatedItems = cart.items.map(i =>
+            i.product_id === product.id ? { ...i, quantity: i.quantity + 1, subtotal: (i.quantity + 1) * i.price } : i
+          );
+        } else {
+          updatedItems = [
+            ...cart.items,
+            {
+              product_id: product.id,
+              product_title: product.title,
+              product_image: product.images && product.images.length > 0 ? product.images[0] : undefined,
+              price: product.price,
+              quantity: 1,
+              selected: true,
+              in_stock: true,
+              max_quantity: 10,
+              subtotal: product.price,
+            },
+          ];
+        }
+        const selected_items = updatedItems.filter(i => i.selected);
+        dispatch(setCart({
+          ...cart,
+          items: updatedItems,
+          total_items: updatedItems.length,
+          selected_items_count: selected_items.length,
+          subtotal: selected_items.reduce((acc, curr) => acc + curr.subtotal, 0),
+        }));
+      }
+      dispatch(showToast({ message: 'Added to cart!', type: 'success' }));
+
       try {
         const res = await api.cart.addItem({ product_id: product.id, quantity: 1 });
         dispatch(setCart(res));
-        dispatch(showToast({ message: 'Added to cart!', type: 'success' }));
       } catch (err: any) {
         dispatch(showToast({ message: err.detail || 'Failed to add to cart', type: 'error' }));
       }
     } else {
-      // Guest IndexedDB cart
-      try {
-        await guestCartDB.addItem(product.id, 1);
-        dispatch(addGuestItem({ product_id: product.id, quantity: 1 }));
-        dispatch(showToast({ message: 'Added to guest cart!', type: 'success' }));
-      } catch (err: any) {
-        dispatch(showToast({ message: err.message || 'Cart is full.', type: 'error' }));
-      }
+      dispatch(addGuestItem({ product_id: product.id, quantity: 1 }));
+      dispatch(showToast({ message: 'Added to guest cart!', type: 'success' }));
+      guestCartDB.addItem(product.id, 1).catch(() => {});
     }
   };
 
@@ -92,6 +121,25 @@ export function ProductCard({ product, onOpenLogin }: ProductCardProps) {
     if (newQty < 0) return;
 
     if (isAuthenticated) {
+      if (cart) {
+        let updatedItems;
+        if (newQty === 0) {
+          updatedItems = cart.items.filter(i => i.product_id !== product.id);
+        } else {
+          updatedItems = cart.items.map(i =>
+            i.product_id === product.id ? { ...i, quantity: newQty, subtotal: newQty * i.price } : i
+          );
+        }
+        const selected_items = updatedItems.filter(i => i.selected);
+        dispatch(setCart({
+          ...cart,
+          items: updatedItems,
+          total_items: updatedItems.length,
+          selected_items_count: selected_items.length,
+          subtotal: selected_items.reduce((acc, curr) => acc + curr.subtotal, 0),
+        }));
+      }
+
       try {
         const res = await api.cart.updateItem(product.id, { quantity: newQty });
         dispatch(setCart(res));
@@ -99,11 +147,12 @@ export function ProductCard({ product, onOpenLogin }: ProductCardProps) {
         dispatch(showToast({ message: err.detail || 'Failed to update quantity', type: 'error' }));
       }
     } else {
-      try {
-        await guestCartDB.updateItem(product.id, { quantity: newQty });
+      if (newQty === 0) {
+        dispatch(removeGuestItem(product.id));
+        guestCartDB.removeItem(product.id).catch(() => {});
+      } else {
         dispatch(updateGuestItem({ product_id: product.id, quantity: newQty }));
-      } catch (err: any) {
-        dispatch(showToast({ message: 'Failed to update guest cart', type: 'error' }));
+        guestCartDB.updateItem(product.id, { quantity: newQty }).catch(() => {});
       }
     }
   };

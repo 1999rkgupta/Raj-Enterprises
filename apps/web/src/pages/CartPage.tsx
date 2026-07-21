@@ -80,6 +80,20 @@ export function CartPage({ onOpenLogin }: CartPageProps) {
     }
 
     if (isAuthenticated) {
+      if (cart) {
+        const updatedItems = cart.items.map(i =>
+          i.product_id === productId ? { ...i, quantity: newQty, subtotal: newQty * i.price } : i
+        );
+        const selected_items = updatedItems.filter(i => i.selected !== false);
+        dispatch(setCart({
+          ...cart,
+          items: updatedItems,
+          total_items: updatedItems.length,
+          selected_items_count: selected_items.length,
+          subtotal: selected_items.reduce((acc, curr) => acc + curr.subtotal, 0),
+        }));
+      }
+
       try {
         const res = await api.cart.updateItem(productId, { quantity: newQty });
         dispatch(setCart(res));
@@ -87,12 +101,11 @@ export function CartPage({ onOpenLogin }: CartPageProps) {
         dispatch(showToast({ message: err.detail || 'Failed to update quantity', type: 'error' }));
       }
     } else {
-      try {
-        await guestCartDB.updateItem(productId, { quantity: newQty });
-        dispatch(updateGuestItem({ product_id: productId, quantity: newQty }));
-      } catch {
-        dispatch(showToast({ message: 'Failed to update guest cart', type: 'error' }));
-      }
+      setGuestCartDetailed(prev =>
+        prev.map(i => (i.product_id === productId ? { ...i, quantity: newQty, subtotal: newQty * i.price } : i))
+      );
+      dispatch(updateGuestItem({ product_id: productId, quantity: newQty }));
+      guestCartDB.updateItem(productId, { quantity: newQty }).catch(() => {});
     }
   };
 
