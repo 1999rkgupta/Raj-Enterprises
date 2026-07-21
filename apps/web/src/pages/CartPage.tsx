@@ -99,7 +99,20 @@ export function CartPage({ onOpenLogin }: CartPageProps) {
   const handleToggleSelect = async (productId: string, currentSelected: boolean) => {
     const newSelected = !currentSelected;
 
-    if (isAuthenticated) {
+    if (isAuthenticated && cart) {
+      const updatedItems = cart.items.map(i =>
+        i.product_id === productId ? { ...i, selected: newSelected } : i
+      );
+      const selected_items = updatedItems.filter(i => i.selected);
+      const updatedCart = {
+        ...cart,
+        items: updatedItems,
+        selected_items_count: selected_items.length,
+        subtotal: selected_items.reduce((acc, curr) => acc + curr.subtotal, 0),
+      };
+      // Instant optimistic UI update
+      dispatch(setCart(updatedCart));
+
       try {
         const res = await api.cart.updateItem(productId, { selected: newSelected });
         dispatch(setCart(res));
@@ -107,35 +120,41 @@ export function CartPage({ onOpenLogin }: CartPageProps) {
         dispatch(showToast({ message: 'Failed to toggle selection', type: 'error' }));
       }
     } else {
-      try {
-        await guestCartDB.updateItem(productId, { selected: newSelected });
-        dispatch(updateGuestItem({ product_id: productId, selected: newSelected }));
-      } catch {
-        dispatch(showToast({ message: 'Failed to toggle guest cart selection', type: 'error' }));
-      }
+      setGuestCartDetailed(prev =>
+        prev.map(i => (i.product_id === productId ? { ...i, selected: newSelected } : i))
+      );
+      dispatch(updateGuestItem({ product_id: productId, selected: newSelected }));
+      guestCartDB.updateItem(productId, { selected: newSelected }).catch(() => {});
     }
   };
 
   const handleToggleSelectAll = async () => {
     const targetState = !allSelected;
-    if (isAuthenticated) {
+
+    if (isAuthenticated && cart) {
+      const updatedItems = cart.items.map(i => ({ ...i, selected: targetState }));
+      const selected_items = updatedItems.filter(i => i.selected);
+      const updatedCart = {
+        ...cart,
+        items: updatedItems,
+        selected_items_count: selected_items.length,
+        subtotal: selected_items.reduce((acc, curr) => acc + curr.subtotal, 0),
+      };
+      // Instant optimistic UI update
+      dispatch(setCart(updatedCart));
+
       try {
-        for (const item of items) {
-          await api.cart.updateItem(item.product_id, { selected: targetState });
-        }
-        const freshCart = await api.cart.get();
-        dispatch(setCart(freshCart));
+        await Promise.all(
+          items.map(item => api.cart.updateItem(item.product_id, { selected: targetState }))
+        );
       } catch {
         dispatch(showToast({ message: 'Failed to update selection', type: 'error' }));
       }
     } else {
-      try {
-        for (const item of items) {
-          await guestCartDB.updateItem(item.product_id, { selected: targetState });
-          dispatch(updateGuestItem({ product_id: item.product_id, selected: targetState }));
-        }
-      } catch {
-        dispatch(showToast({ message: 'Failed to update guest selection', type: 'error' }));
+      setGuestCartDetailed(prev => prev.map(i => ({ ...i, selected: targetState })));
+      for (const item of items) {
+        dispatch(updateGuestItem({ product_id: item.product_id, selected: targetState }));
+        guestCartDB.updateItem(item.product_id, { selected: targetState }).catch(() => {});
       }
     }
   };
@@ -260,9 +279,15 @@ export function CartPage({ onOpenLogin }: CartPageProps) {
                     {/* Image */}
                     <div className="cart-item-img-box">
                       {item.product_image ? (
-                        <img src={item.product_image} alt={item.product_title} />
+                        <img
+                          src={item.product_image}
+                          alt={item.product_title}
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = 'none';
+                          }}
+                        />
                       ) : (
-                        <span style={{ fontSize: '1.5rem' }}>🎨</span>
+                        <span style={{ fontSize: '1.5rem' }}>📦</span>
                       )}
                     </div>
 

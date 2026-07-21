@@ -44,14 +44,18 @@ async def _get_cart_response(user_id: ObjectId) -> CartResponse:
         if product:
             price = product["price"]
             stock = product.get("stock_count", 0)
+            raw_img = product["images"][0] if product.get("images") else None
+            if raw_img and (raw_img.startswith("http://") or raw_img.startswith("https://")):
+                image_url = raw_img
+            elif raw_img:
+                image_url = f"{settings.image_base_url.rstrip('/')}/{raw_img.lstrip('/')}"
+            else:
+                image_url = None
+
             items.append(CartItemResponse(
                 product_id=str(product["_id"]),
                 product_title=product["title"],
-                product_image=(
-                    f"{settings.image_base_url}/{product['images'][0]}"
-                    if product.get("images")
-                    else None
-                ),
+                product_image=image_url,
                 price=price,
                 quantity=item["quantity"],
                 selected=item.get("selected", True),

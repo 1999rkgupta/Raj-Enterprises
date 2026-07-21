@@ -27,14 +27,18 @@ async def get_wishlist(current_user: dict = Depends(get_current_user)):
     for pid in wishlist.get("product_ids", []):
         product = await database.products.find_one({"_id": ObjectId(pid) if isinstance(pid, str) else pid})
         if product:
+            raw_img = product["images"][0] if product.get("images") else None
+            if raw_img and (raw_img.startswith("http://") or raw_img.startswith("https://")):
+                image_url = raw_img
+            elif raw_img:
+                image_url = f"{settings.image_base_url.rstrip('/')}/{raw_img.lstrip('/')}"
+            else:
+                image_url = None
+
             items.append(WishlistItemResponse(
                 product_id=str(product["_id"]),
                 product_title=product["title"],
-                product_image=(
-                    f"{settings.image_base_url}/{product['images'][0]}"
-                    if product.get("images")
-                    else None
-                ),
+                product_image=image_url,
                 price=product["price"],
                 in_stock=product.get("stock_count", 0) > 0,
                 status=product.get("status", "active"),
