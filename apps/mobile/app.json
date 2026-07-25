@@ -1,16 +1,35 @@
 {
   "expo": {
-    "name": "Raj Enterprises",
+    "name": "Raj Ent",
     "slug": "raj-enterprises",
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#121214"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.rajenterprises.store"
     },
     "android": {
-      "package": "com.rajenterprises.store"
-    }
+      "package": "com.rajenterprises.store",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#121214"
+      },
+      "splash": {
+        "backgroundColor": "#121214"
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "40b6d71f-2c31-4028-b4fe-9bdd87e41880"
+      }
+    },
+    "owner": "1999rkgupta"
   }
 }

@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { api } from '../api';
-import { clearCart, setCart, showToast } from '@raj-enterprises/shared-redux';
+import { clearCart, setCart, showToast, updateGuestItem, removeGuestItem } from '@raj-enterprises/shared-redux';
 import type { RootState } from '../store';
 
 export default function CartScreen({ navigation }: any) {
   const dispatch = useDispatch();
-  const cartItems = useSelector((state: RootState) => state.cart.items || []);
   const user = useSelector((state: RootState) => state.auth.user);
+  const { cart, guestItems } = useSelector((state: RootState) => state.cart);
+  const cartItems = user ? (cart?.items || []) : (guestItems || []);
 
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -41,15 +42,21 @@ export default function CartScreen({ navigation }: any) {
     if (nextQty < 0) return;
 
     try {
-      const itemsPayload = cartItems.map((i: any) => {
-        if (i.product_id === productId) {
-          return { ...i, quantity: nextQty };
+      if (user) {
+        if (nextQty === 0) {
+          const updated = await api.cart.removeItem(productId);
+          dispatch(setCart(updated));
+        } else {
+          const updated = await api.cart.updateItem(productId, { quantity: nextQty });
+          dispatch(setCart(updated));
         }
-        return { product_id: i.product_id, quantity: i.quantity, selected: i.selected };
-      }).filter((i: any) => i.quantity > 0);
-
-      const updated = await api.cart.update({ items: itemsPayload });
-      dispatch(setCart(updated));
+      } else {
+        if (nextQty === 0) {
+          dispatch(removeGuestItem(productId));
+        } else {
+          dispatch(updateGuestItem({ product_id: productId, quantity: nextQty }));
+        }
+      }
     } catch {
       dispatch(showToast({ message: 'Failed to update item quantity.', type: 'error' }));
     }
@@ -57,15 +64,12 @@ export default function CartScreen({ navigation }: any) {
 
   const handleToggleSelect = async (productId: string, currentSelected: boolean) => {
     try {
-      const itemsPayload = cartItems.map((i: any) => {
-        if (i.product_id === productId) {
-          return { ...i, selected: !currentSelected };
-        }
-        return { product_id: i.product_id, quantity: i.quantity, selected: i.selected };
-      });
-
-      const updated = await api.cart.update({ items: itemsPayload });
-      dispatch(setCart(updated));
+      if (user) {
+        const updated = await api.cart.updateItem(productId, { selected: !currentSelected });
+        dispatch(setCart(updated));
+      } else {
+        dispatch(updateGuestItem({ product_id: productId, selected: !currentSelected }));
+      }
     } catch {
       dispatch(showToast({ message: 'Failed to toggle item state.', type: 'error' }));
     }
@@ -81,7 +85,7 @@ export default function CartScreen({ navigation }: any) {
     setSubmitting(true);
     try {
       // Direct checkout trigger (simulate COD default checkout)
-      await api.orders.create({ address_index: 0 });
+      await api.orders.place({ address_index: 0 });
       dispatch(clearCart());
       dispatch(showToast({ message: 'Order placed successfully via Cash on Delivery!', type: 'success' }));
       navigation.navigate('Home');

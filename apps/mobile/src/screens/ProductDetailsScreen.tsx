@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { api } from '../api';
-import { showToast, setCart } from '@raj-enterprises/shared-redux';
+import { showToast, setCart, addGuestItem } from '@raj-enterprises/shared-redux';
 import type { RootState } from '../store';
 
 export default function ProductDetailsScreen({ route, navigation }: any) {
   const { productId } = route.params;
   const dispatch = useDispatch();
-  const cartItems = useSelector((state: RootState) => state.cart.items || []);
   const user = useSelector((state: RootState) => state.auth.user);
+  const { cart, guestItems } = useSelector((state: RootState) => state.cart);
+  const cartItems = user ? (cart?.items || []) : (guestItems || []);
 
   const [product, setProduct] = useState<any | null>(null);
   const [qty, setQty] = useState(1);
@@ -37,23 +38,11 @@ export default function ProductDetailsScreen({ route, navigation }: any) {
     try {
       if (user) {
         // Authenticated server cart sync
-        const itemsPayload = [...cartItems.map((i: any) => ({
-          product_id: i.product_id,
-          quantity: i.quantity,
-          selected: i.selected
-        }))];
-        
-        const existingIdx = itemsPayload.findIndex(i => i.product_id === productId);
-        if (existingIdx > -1) {
-          itemsPayload[existingIdx].quantity += qty;
-        } else {
-          itemsPayload.push({ product_id: productId, quantity: qty, selected: true });
-        }
-
-        const updatedCart = await api.cart.update({ items: itemsPayload });
+        const updatedCart = await api.cart.addItem({ product_id: productId, quantity: qty });
         dispatch(setCart(updatedCart));
       } else {
         // Guest cart offline persistence simulation in Redux
+        dispatch(addGuestItem({ product_id: productId, quantity: qty }));
         dispatch(showToast({ message: 'Saved as Guest cart item.', type: 'success' }));
       }
       dispatch(showToast({ message: 'Product added to cart!', type: 'success' }));

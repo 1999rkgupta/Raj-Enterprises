@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser, setUser, showToast } from '@raj-enterprises/shared-redux';
 import { setMobileAuthToken, api } from '../api';
+import { auth } from '../firebase';
 import type { RootState } from '../store';
 
 export default function ProfileScreen({ navigation }: any) {
@@ -16,7 +17,12 @@ export default function ProfileScreen({ navigation }: any) {
   const [pincode, setPincode] = useState('');
   const [submittingAddress, setSubmittingAddress] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await auth.signOut();
+    } catch (e) {
+      console.warn('Firebase sign out failed', e);
+    }
     setMobileAuthToken(null);
     dispatch(clearUser());
     dispatch(showToast({ message: 'Logged out successfully.', type: 'success' }));
@@ -31,18 +37,21 @@ export default function ProfileScreen({ navigation }: any) {
     setSubmittingAddress(true);
 
     try {
-      const addressesPayload = [...(user?.addresses || [])];
-      addressesPayload.push({
+      const isDefault = !user?.addresses || user.addresses.length === 0;
+      await api.users.addAddress({
+        label: 'Home',
         full_name: user?.name || 'Customer Name',
         phone: user?.mobile || '0000000000',
         address_line_1: addrLine1,
         city,
         state: stateName,
         pincode,
+        is_default: isDefault,
       });
 
-      const updatedUser = await api.users.updateProfile({ addresses: addressesPayload });
-      dispatch(setUser(updatedUser));
+      // Refresh profile to pull fresh addresses list
+      const freshUser = await api.auth.getMe();
+      dispatch(setUser(freshUser));
       dispatch(showToast({ message: 'New shipping address saved!', type: 'success' }));
 
       // Clear fields

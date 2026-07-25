@@ -7,7 +7,9 @@ import { showToast } from '@raj-enterprises/shared-redux';
 
 export default function HomeScreen({ navigation }: any) {
   const dispatch = useDispatch();
-  const cartItems = useSelector((state: RootState) => state.cart.items || []);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const { cart, guestItems } = useSelector((state: RootState) => state.cart);
+  const cartItems = user ? (cart?.items || []) : (guestItems || []);
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCat, setSelectedCat] = useState<string | null>(null);
@@ -16,14 +18,14 @@ export default function HomeScreen({ navigation }: any) {
   const fetchCatalogData = async () => {
     setLoading(true);
     try {
-      const catsRes = await api.categories.listActive();
-      setCategories(catsRes);
+      const catsRes = await api.categories.list();
+      setCategories(catsRes?.categories || []);
 
       const productsRes = await api.products.list({
-        category_id: selectedCat || undefined,
-        limit: 40,
+        category: selectedCat || undefined,
+        page_size: 40,
       });
-      setProducts(productsRes.products);
+      setProducts(productsRes?.products || []);
     } catch {
       dispatch(showToast({ message: 'Error fetching catalog feeds.', type: 'error' }));
     } finally {

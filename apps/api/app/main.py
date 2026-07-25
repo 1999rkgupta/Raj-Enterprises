@@ -133,7 +133,7 @@ app.include_router(admin_reports.router, prefix="/api/admin/reports", tags=["Adm
 @app.api_route("/", methods=["GET", "HEAD"], tags=["Health"])
 async def root():
     return {
-        "name": settings.app_name,
+        "name": settings.app_name, 
         "version": "1.0.0",
         "status": "running",
         "environment": settings.app_env,
