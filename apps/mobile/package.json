@@ -4,7 +4,8 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "dev": "expo start",
+    "dev": "expo start --lan",
+    "dev:tunnel": "expo start --tunnel",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "build": "echo 'Mobile build requires Expo EAS'",
