@@ -1,5 +1,4 @@
 import 'react-native-gesture-handler';
-import { registerRootComponent } from 'expo';
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Provider } from 'react-redux';
@@ -103,8 +102,6 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
-
-registerRootComponent(App);
 
 const styles = StyleSheet.create({
   errorContainer: {

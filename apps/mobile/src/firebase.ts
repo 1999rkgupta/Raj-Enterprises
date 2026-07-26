@@ -20,32 +20,46 @@ try {
   console.warn('Firebase initializeApp notice:', e);
 }
 
-export const auth = (() => {
-  if (!app) return null as any;
-  try {
-    return getAuth(app);
-  } catch {
+let authInstance: any = null;
+
+function getAuthInstance() {
+  if (!authInstance && app) {
     try {
-      return initializeAuth(app, {
-        persistence: getReactNativePersistence(AsyncStorage),
-      });
+      authInstance = getAuth(app);
     } catch {
       try {
-        return getAuth(app);
-      } catch (err) {
-        console.warn('Firebase auth init notice:', err);
-        return null as any;
+        authInstance = initializeAuth(app, {
+          persistence: getReactNativePersistence(AsyncStorage),
+        });
+      } catch {
+        try {
+          authInstance = getAuth(app);
+        } catch (err) {
+          console.warn('Firebase auth init notice:', err);
+        }
       }
     }
   }
-})();
+  return authInstance;
+}
+
+export const auth = new Proxy({} as any, {
+  get(_target, prop) {
+    const instance = getAuthInstance();
+    if (!instance) return undefined;
+    const value = instance[prop];
+    if (typeof value === 'function') {
+      return value.bind(instance);
+    }
+    return value;
+  },
+});
 
 export async function getIdToken(): Promise<string | null> {
-  if (!auth) return null;
-  const user = auth.currentUser;
-  if (!user) return null;
+  const instance = getAuthInstance();
+  if (!instance || !instance.currentUser) return null;
   try {
-    return await user.getIdToken(true);
+    return await instance.currentUser.getIdToken(true);
   } catch {
     return null;
   }
