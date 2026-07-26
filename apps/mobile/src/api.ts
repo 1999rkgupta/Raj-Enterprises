@@ -1,7 +1,7 @@
 import { createApiClient } from '@raj-enterprises/api-client';
 import { getIdToken } from './firebase';
 
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || '';
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL || 'https://raj-enterprises-api.onrender.com';
 
 let devAuthToken: string | null = null; // Used for Mock Dev login bypass
 

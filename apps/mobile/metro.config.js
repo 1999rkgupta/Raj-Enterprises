@@ -10,35 +10,21 @@ const config = getDefaultConfig(projectRoot);
 // 1. Watch all files within the monorepo workspace
 config.watchFolders = [workspaceRoot];
 
-// 2. Let Metro know where to resolve packages and in what priority order
+// 2. Priority resolution paths for Metro bundler
 config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(workspaceRoot, 'node_modules'),
 ];
 
-// 3. Resolve the actual installed paths using require.resolve to support monorepo hoisting on EAS / local builds
-const reactPath = path.dirname(require.resolve('react/package.json'));
-const reactNativePath = path.dirname(require.resolve('react-native/package.json'));
-const reactReduxPath = path.dirname(require.resolve('react-redux/package.json'));
-const reduxjsToolkitPath = path.dirname(require.resolve('@reduxjs/toolkit/package.json'));
+// 3. Disable hierarchical lookup to prevent Metro from picking up duplicate nested packages
+config.resolver.disableHierarchicalLookup = true;
 
-// 4. Custom resolveRequest to force deduplication of React and React Native across the entire monorepo
-config.resolver.resolveRequest = (context, moduleName, platform) => {
-  if (moduleName === 'react') {
-    return context.resolveRequest(context, reactPath, platform);
-  }
-  if (moduleName === 'react-native') {
-    return context.resolveRequest(context, reactNativePath, platform);
-  }
-  return context.resolveRequest(context, moduleName, platform);
-};
-
-// 5. Fallback extraNodeModules for non-standard package structures
+// 4. Force extraNodeModules mapping for monorepo packages
 config.resolver.extraNodeModules = {
-  react: reactPath,
-  'react-native': reactNativePath,
-  'react-redux': reactReduxPath,
-  '@reduxjs/toolkit': reduxjsToolkitPath,
+  react: path.dirname(require.resolve('react/package.json')),
+  'react-native': path.dirname(require.resolve('react-native/package.json')),
+  'react-redux': path.dirname(require.resolve('react-redux/package.json')),
+  '@reduxjs/toolkit': path.dirname(require.resolve('@reduxjs/toolkit/package.json')),
 };
 
 module.exports = config;

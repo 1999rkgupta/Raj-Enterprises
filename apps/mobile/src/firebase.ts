@@ -12,22 +12,36 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID || '1:123:web:abc',
 };
 
-// Initialize Firebase safely
-const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+// Safe initialization that never crashes top-level JS bundle load
+let app: any;
+try {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+} catch (e) {
+  console.warn('Firebase initializeApp notice:', e);
+}
 
-// Auth with React Native persistence using AsyncStorage with fallback
 export const auth = (() => {
+  if (!app) return null as any;
   try {
-    return initializeAuth(app, {
-      persistence: getReactNativePersistence(AsyncStorage),
-    });
-  } catch {
     return getAuth(app);
+  } catch {
+    try {
+      return initializeAuth(app, {
+        persistence: getReactNativePersistence(AsyncStorage),
+      });
+    } catch {
+      try {
+        return getAuth(app);
+      } catch (err) {
+        console.warn('Firebase auth init notice:', err);
+        return null as any;
+      }
+    }
   }
 })();
 
-// Helper to get active user's Firebase ID token
 export async function getIdToken(): Promise<string | null> {
+  if (!auth) return null;
   const user = auth.currentUser;
   if (!user) return null;
   try {
