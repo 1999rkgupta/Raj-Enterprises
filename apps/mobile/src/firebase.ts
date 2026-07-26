@@ -12,54 +12,24 @@ const firebaseConfig = {
   appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID || '1:123:web:abc',
 };
 
-// Safe initialization that never crashes top-level JS bundle load
-let app: any;
-try {
-  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-} catch (e) {
-  console.warn('Firebase initializeApp notice:', e);
-}
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 
-let authInstance: any = null;
-
-function getAuthInstance() {
-  if (!authInstance && app) {
-    try {
-      authInstance = getAuth(app);
-    } catch {
-      try {
-        authInstance = initializeAuth(app, {
-          persistence: getReactNativePersistence(AsyncStorage),
-        });
-      } catch {
-        try {
-          authInstance = getAuth(app);
-        } catch (err) {
-          console.warn('Firebase auth init notice:', err);
-        }
-      }
-    }
+function initAuth() {
+  try {
+    return initializeAuth(app, {
+      persistence: getReactNativePersistence(AsyncStorage),
+    });
+  } catch {
+    return getAuth(app);
   }
-  return authInstance;
 }
 
-export const auth = new Proxy({} as any, {
-  get(_target, prop) {
-    const instance = getAuthInstance();
-    if (!instance) return undefined;
-    const value = instance[prop];
-    if (typeof value === 'function') {
-      return value.bind(instance);
-    }
-    return value;
-  },
-});
+export const auth = initAuth();
 
 export async function getIdToken(): Promise<string | null> {
-  const instance = getAuthInstance();
-  if (!instance || !instance.currentUser) return null;
+  if (!auth || !auth.currentUser) return null;
   try {
-    return await instance.currentUser.getIdToken(true);
+    return await auth.currentUser.getIdToken(true);
   } catch {
     return null;
   }
