@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
   TouchableOpacity,
   ScrollView,
   Image,
@@ -12,7 +11,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { api } from '../api';
 import type { RootState } from '../store';
-import { showToast, setCart, addGuestItem, updateGuestItem, removeGuestItem } from '@raj-enterprises/shared-redux';
+import { showToast, setCart, addGuestItem, updateGuestItem, removeGuestItem, toggleWishlistItem } from '@raj-enterprises/shared-redux';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80';
@@ -21,6 +20,7 @@ export default function HomeScreen({ navigation }: any) {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   const { cart, guestItems } = useSelector((state: RootState) => state.cart);
+  const wishlistProductIds = useSelector((state: RootState) => state.wishlist.productIds || []);
   const cartItems = user ? (cart?.items || []) : (guestItems || []);
 
   const [products, setProducts] = useState<any[]>([]);
@@ -57,6 +57,17 @@ export default function HomeScreen({ navigation }: any) {
   const getItemQtyInCart = (productId: string) => {
     const found = cartItems.find((i: any) => i.product_id === productId);
     return found ? found.quantity : 0;
+  };
+
+  const isWishlisted = (productId: string) => wishlistProductIds.includes(productId);
+
+  const handleToggleWishlist = (productId: string) => {
+    dispatch(toggleWishlistItem(productId));
+    const isAdded = !isWishlisted(productId);
+    dispatch(showToast({
+      message: isAdded ? 'Saved to Wishlist 💖' : 'Removed from Wishlist',
+      type: isAdded ? 'success' : 'info',
+    }));
   };
 
   const handleUpdateQty = async (productId: string, delta: number) => {
@@ -100,16 +111,26 @@ export default function HomeScreen({ navigation }: any) {
           <Text style={styles.brandSubtitle}>Wholesale Paints & Coatings</Text>
         </View>
         <View style={styles.headerBtns}>
+          <TouchableOpacity style={styles.iconBtn} onPress={() => navigation.navigate('Wishlist')}>
+            <Text style={{ fontSize: 20 }}>💖</Text>
+            {wishlistProductIds.length > 0 && (
+              <View style={[styles.badge, { backgroundColor: '#EC4899' }]}>
+                <Text style={styles.badgeText}>{wishlistProductIds.length}</Text>
+              </View>
+            )}
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.iconBtn} onPress={() => navigation.navigate('Cart')}>
-            <Text style={{ fontSize: 22 }}>🛒</Text>
+            <Text style={{ fontSize: 20 }}>🛒</Text>
             {totalCartQty > 0 && (
               <View style={styles.badge}>
                 <Text style={styles.badgeText}>{totalCartQty}</Text>
               </View>
             )}
           </TouchableOpacity>
+
           <TouchableOpacity style={styles.iconBtn} onPress={() => navigation.navigate('Profile')}>
-            <Text style={{ fontSize: 22 }}>👤</Text>
+            <Text style={{ fontSize: 20 }}>👤</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -181,6 +202,7 @@ export default function HomeScreen({ navigation }: any) {
               const imageUrl = item.images && item.images.length > 0 ? item.images[0] : DEFAULT_IMAGE;
               const isOutOfStock = item.stock_count <= 0;
               const isLowStock = item.stock_count > 0 && item.stock_count <= item.low_stock_threshold;
+              const wishlisted = isWishlisted(item.id);
 
               return (
                 <TouchableOpacity
@@ -205,13 +227,21 @@ export default function HomeScreen({ navigation }: any) {
                         <Text style={styles.stockBadgeText}>LOW STOCK</Text>
                       </View>
                     ) : null}
+
+                    {/* Wishlist Heart Toggle */}
+                    <TouchableOpacity
+                      style={styles.wishlistBtn}
+                      onPress={() => handleToggleWishlist(item.id)}
+                    >
+                      <Text style={{ fontSize: 16 }}>{wishlisted ? '💖' : '🤍'}</Text>
+                    </TouchableOpacity>
                   </View>
 
                   {/* Details Block */}
                   <View style={styles.cardContent}>
                     <Text style={styles.productTitle} numberOfLines={1}>{item.title}</Text>
                     <Text style={styles.skuText}>SKU: {item.sku}</Text>
-                    
+
                     <View style={styles.priceRow}>
                       <Text style={styles.priceText}>₹{item.price.toFixed(2)}</Text>
                       {item.unit && <Text style={styles.unitText}>/ {item.unit}</Text>}
@@ -288,7 +318,7 @@ const styles = StyleSheet.create({
   },
   headerBtns: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 8,
   },
   iconBtn: {
     padding: 6,
@@ -296,18 +326,18 @@ const styles = StyleSheet.create({
   },
   badge: {
     position: 'absolute',
-    top: 2,
-    right: 2,
-    backgroundColor: '#EC4899',
-    borderRadius: 9,
-    width: 18,
-    height: 18,
+    top: 0,
+    right: 0,
+    backgroundColor: '#6366F1',
+    borderRadius: 8,
+    width: 16,
+    height: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   badgeText: {
     color: '#FFF',
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: 'bold',
   },
   searchWrapper: {
@@ -442,6 +472,17 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 9,
     fontWeight: 'bold',
+  },
+  wishlistBtn: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    backgroundColor: 'rgba(15, 23, 42, 0.7)',
+    borderRadius: 14,
+    width: 28,
+    height: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   cardContent: {
     padding: 10,
