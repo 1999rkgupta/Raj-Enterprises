@@ -8,7 +8,7 @@ import { setMobileAuthToken, api } from '../api';
 
 export default function LoginScreen({ navigation }: any) {
   const dispatch = useDispatch();
-  const [activeTab, setActiveTab] = useState<'signin' | 'register' | 'mock'>('signin');
+  const [activeTab, setActiveTab] = useState<'signin' | 'register'>('signin');
 
   // Sign In inputs
   const [email, setEmail] = useState('');
@@ -22,21 +22,6 @@ export default function LoginScreen({ navigation }: any) {
   const [regShopName, setRegShopName] = useState('');
 
   const [loading, setLoading] = useState(false);
-
-  const handleDevMockLogin = async (role: 'mock-customer' | 'mock-admin') => {
-    setLoading(true);
-    try {
-      setMobileAuthToken(role);
-      const dbUser = await api.auth.getMe();
-      dispatch(setUser(dbUser));
-      dispatch(showToast({ message: `Dev Mock login as ${dbUser.role} active`, type: 'success' }));
-      navigation.replace('Home');
-    } catch (err: any) {
-      dispatch(showToast({ message: err.detail || 'Mock login failed', type: 'error' }));
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleFirebaseSignIn = async () => {
     if (!email || !password) {
@@ -103,42 +88,40 @@ export default function LoginScreen({ navigation }: any) {
             style={[styles.tabButton, activeTab === 'register' && styles.activeTab]}
             onPress={() => setActiveTab('register')}
           >
-            <Text style={[styles.tabText, activeTab === 'register' && styles.activeTabText]}>Register</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.tabButton, activeTab === 'mock' && styles.activeTab]}
-            onPress={() => setActiveTab('mock')}
-          >
-            <Text style={[styles.tabText, activeTab === 'mock' && styles.activeTabText]}>⚡ Mock</Text>
+            <Text style={[styles.tabText, activeTab === 'register' && styles.activeTabText]}>Create Account</Text>
           </TouchableOpacity>
         </View>
 
         {/* Tab Contents */}
         {activeTab === 'signin' && (
           <View style={styles.form}>
+            <Text style={styles.fieldLabel}>Email Address</Text>
             <TextInput
               style={styles.input}
-              placeholder="Email Address"
+              placeholder="Enter your wholesale email"
               placeholderTextColor="#64748B"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
             />
+
+            <Text style={styles.fieldLabel}>Password</Text>
             <TextInput
               style={styles.input}
-              placeholder="Password"
+              placeholder="Enter your password"
               placeholderTextColor="#64748B"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
               autoCapitalize="none"
             />
+
             <TouchableOpacity style={styles.actionButton} onPress={handleFirebaseSignIn} disabled={loading}>
               {loading ? (
                 <ActivityIndicator color="#FFF" size="small" />
               ) : (
-                <Text style={styles.actionButtonText}>Sign In</Text>
+                <Text style={styles.actionButtonText}>SIGN IN TO STORE</Text>
               )}
             </TouchableOpacity>
           </View>
@@ -146,77 +129,63 @@ export default function LoginScreen({ navigation }: any) {
 
         {activeTab === 'register' && (
           <View style={styles.form}>
+            <Text style={styles.fieldLabel}>Full Name</Text>
             <TextInput
               style={styles.input}
-              placeholder="Full Name"
+              placeholder="Enter your name"
               placeholderTextColor="#64748B"
               value={regName}
               onChangeText={setRegName}
             />
+
+            <Text style={styles.fieldLabel}>Email Address</Text>
             <TextInput
               style={styles.input}
-              placeholder="Email Address"
+              placeholder="Enter email address"
               placeholderTextColor="#64748B"
               value={regEmail}
               onChangeText={setRegEmail}
               keyboardType="email-address"
               autoCapitalize="none"
             />
+
+            <Text style={styles.fieldLabel}>Password</Text>
             <TextInput
               style={styles.input}
-              placeholder="Password"
+              placeholder="Create strong password"
               placeholderTextColor="#64748B"
               value={regPassword}
               onChangeText={setRegPassword}
               secureTextEntry
               autoCapitalize="none"
             />
+
+            <Text style={styles.fieldLabel}>Mobile Number (Optional)</Text>
             <TextInput
               style={styles.input}
-              placeholder="Mobile Number (Optional)"
+              placeholder="+91 98765 43210"
               placeholderTextColor="#64748B"
               value={regMobile}
               onChangeText={setRegMobile}
               keyboardType="phone-pad"
             />
+
+            <Text style={styles.fieldLabel}>Shop / Firm Name (Optional)</Text>
             <TextInput
               style={styles.input}
-              placeholder="Shop Name (Optional)"
+              placeholder="e.g. Raj Paint Traders"
               placeholderTextColor="#64748B"
               value={regShopName}
               onChangeText={setRegShopName}
             />
+
             <TouchableOpacity style={styles.actionButton} onPress={handleFirebaseRegister} disabled={loading}>
               {loading ? (
                 <ActivityIndicator color="#FFF" size="small" />
               ) : (
-                <Text style={styles.actionButtonText}>Create Account</Text>
+                <Text style={styles.actionButtonText}>REGISTER ACCOUNT</Text>
               )}
             </TouchableOpacity>
-          </View>
-        )}
-
-        {activeTab === 'mock' && (
-          <View style={styles.mockContainer}>
-            <Text style={styles.mockDesc}>
-              Quick Developer Login. Connects directly to seeded backend accounts without passwords.
-            </Text>
-            <View style={styles.mockRow}>
-              <TouchableOpacity
-                style={[styles.mockBtn, styles.custBtn]}
-                onPress={() => handleDevMockLogin('mock-customer')}
-                disabled={loading}
-              >
-                <Text style={styles.mockText}>Customer</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.mockBtn, styles.adminBtn]}
-                onPress={() => handleDevMockLogin('mock-admin')}
-                disabled={loading}
-              >
-                <Text style={styles.mockText}>Admin</Text>
-              </TouchableOpacity>
-            </View>
           </View>
         )}
       </View>
@@ -281,6 +250,12 @@ const styles = StyleSheet.create({
   form: {
     gap: 12,
   },
+  fieldLabel: {
+    color: '#CBD5E1',
+    fontSize: 12,
+    fontWeight: '600',
+    marginBottom: -4,
+  },
   input: {
     backgroundColor: '#0F172A',
     color: '#F8FAFC',
@@ -295,43 +270,11 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 10,
   },
   actionButtonText: {
     color: '#FFF',
     fontWeight: 'bold',
-    fontSize: 16,
-  },
-  mockContainer: {
-    alignItems: 'center',
-    paddingVertical: 10,
-  },
-  mockDesc: {
-    color: '#94A3B8',
-    textAlign: 'center',
-    fontSize: 12,
-    marginBottom: 20,
-  },
-  mockRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-  mockBtn: {
-    flex: 1,
-    padding: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginHorizontal: 6,
-  },
-  custBtn: {
-    backgroundColor: '#4338CA',
-  },
-  adminBtn: {
-    backgroundColor: '#BE185D',
-  },
-  mockText: {
-    color: '#FFF',
-    fontWeight: 'bold',
+    fontSize: 15,
   },
 });
