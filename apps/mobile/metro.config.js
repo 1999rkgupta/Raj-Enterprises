@@ -16,7 +16,29 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, 'node_modules'),
 ];
 
-// 3. Force Metro to deduplicate React, React-Native and Redux so monorepo shared packages use the same instance
+// 3. Custom resolveRequest to force deduplication of React and React Native across the entire monorepo
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  // Redirect all React imports to the mobile app's local version (React 18.2.0)
+  if (moduleName === 'react') {
+    return context.resolveRequest(
+      context,
+      path.resolve(projectRoot, 'node_modules/react'),
+      platform
+    );
+  }
+  // Redirect all React Native imports to the mobile app's local version (React Native 0.74.5)
+  if (moduleName === 'react-native') {
+    return context.resolveRequest(
+      context,
+      path.resolve(projectRoot, 'node_modules/react-native'),
+      platform
+    );
+  }
+  // Let Metro resolve everything else normally
+  return context.resolveRequest(context, moduleName, platform);
+};
+
+// 4. Fallback extraNodeModules for non-standard package structures
 config.resolver.extraNodeModules = {
   react: path.resolve(projectRoot, 'node_modules/react'),
   'react-native': path.resolve(projectRoot, 'node_modules/react-native'),
