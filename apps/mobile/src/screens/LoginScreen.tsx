@@ -4,13 +4,12 @@ import { useDispatch } from 'react-redux';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { setUser, showToast } from '@raj-enterprises/shared-redux';
-import { User, UserRole } from '@raj-enterprises/shared-types';
 import { setMobileAuthToken, api } from '../api';
 
 export default function LoginScreen({ navigation }: any) {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState<'signin' | 'register' | 'mock'>('signin');
-  
+
   // Sign In inputs
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -46,19 +45,14 @@ export default function LoginScreen({ navigation }: any) {
     }
     setLoading(true);
     try {
-      // 1. Firebase Authentication
-      const credential = await signInWithEmailAndPassword(auth, email, password);
-      
-      // 2. Clear dev bypass tokens
+      await signInWithEmailAndPassword(auth, email, password);
       setMobileAuthToken(null);
-
-      // 3. Resolve user profile from MongoDB
       const dbUser = await api.auth.getMe();
       dispatch(setUser(dbUser));
       dispatch(showToast({ message: `Welcome back, ${dbUser.name}!`, type: 'success' }));
       navigation.replace('Home');
     } catch (err: any) {
-      dispatch(showToast({ message: err.message || 'Authentication failed. Please verify credentials.', type: 'error' }));
+      dispatch(showToast({ message: err.message || 'Authentication failed.', type: 'error' }));
     } finally {
       setLoading(false);
     }
@@ -71,13 +65,8 @@ export default function LoginScreen({ navigation }: any) {
     }
     setLoading(true);
     try {
-      // 1. Create account in Firebase Auth
       const credential = await createUserWithEmailAndPassword(auth, regEmail, regPassword);
-      
-      // 2. Clear dev bypass tokens
       setMobileAuthToken(null);
-
-      // 3. Create profile record in MongoDB via API
       const dbUser = await api.auth.register({
         firebase_uid: credential.user.uid,
         name: regName,
@@ -99,24 +88,24 @@ export default function LoginScreen({ navigation }: any) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.title}>Raj Enterprises</Text>
-        <Text style={styles.subtitle}>Direct Wholesale Storefront</Text>
+        <Text style={styles.title}>RAJ ENTERPRISES</Text>
+        <Text style={styles.subtitle}>Wholesale Storefront Portal</Text>
 
         {/* Tab Controls */}
         <View style={styles.tabBar}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.tabButton, activeTab === 'signin' && styles.activeTab]}
             onPress={() => setActiveTab('signin')}
           >
             <Text style={[styles.tabText, activeTab === 'signin' && styles.activeTabText]}>Sign In</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.tabButton, activeTab === 'register' && styles.activeTab]}
             onPress={() => setActiveTab('register')}
           >
             <Text style={[styles.tabText, activeTab === 'register' && styles.activeTabText]}>Register</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={[styles.tabButton, activeTab === 'mock' && styles.activeTab]}
             onPress={() => setActiveTab('mock')}
           >
@@ -130,7 +119,7 @@ export default function LoginScreen({ navigation }: any) {
             <TextInput
               style={styles.input}
               placeholder="Email Address"
-              placeholderTextColor="#777"
+              placeholderTextColor="#64748B"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -139,7 +128,7 @@ export default function LoginScreen({ navigation }: any) {
             <TextInput
               style={styles.input}
               placeholder="Password"
-              placeholderTextColor="#777"
+              placeholderTextColor="#64748B"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
@@ -160,14 +149,14 @@ export default function LoginScreen({ navigation }: any) {
             <TextInput
               style={styles.input}
               placeholder="Full Name"
-              placeholderTextColor="#777"
+              placeholderTextColor="#64748B"
               value={regName}
               onChangeText={setRegName}
             />
             <TextInput
               style={styles.input}
               placeholder="Email Address"
-              placeholderTextColor="#777"
+              placeholderTextColor="#64748B"
               value={regEmail}
               onChangeText={setRegEmail}
               keyboardType="email-address"
@@ -176,7 +165,7 @@ export default function LoginScreen({ navigation }: any) {
             <TextInput
               style={styles.input}
               placeholder="Password"
-              placeholderTextColor="#777"
+              placeholderTextColor="#64748B"
               value={regPassword}
               onChangeText={setRegPassword}
               secureTextEntry
@@ -185,7 +174,7 @@ export default function LoginScreen({ navigation }: any) {
             <TextInput
               style={styles.input}
               placeholder="Mobile Number (Optional)"
-              placeholderTextColor="#777"
+              placeholderTextColor="#64748B"
               value={regMobile}
               onChangeText={setRegMobile}
               keyboardType="phone-pad"
@@ -193,7 +182,7 @@ export default function LoginScreen({ navigation }: any) {
             <TextInput
               style={styles.input}
               placeholder="Shop Name (Optional)"
-              placeholderTextColor="#777"
+              placeholderTextColor="#64748B"
               value={regShopName}
               onChangeText={setRegShopName}
             />
@@ -210,18 +199,18 @@ export default function LoginScreen({ navigation }: any) {
         {activeTab === 'mock' && (
           <View style={styles.mockContainer}>
             <Text style={styles.mockDesc}>
-              Developer Bypass. Connects instantly with local seeded database accounts.
+              Quick Developer Login. Connects directly to seeded backend accounts without passwords.
             </Text>
             <View style={styles.mockRow}>
-              <TouchableOpacity 
-                style={[styles.mockBtn, styles.custBtn]} 
+              <TouchableOpacity
+                style={[styles.mockBtn, styles.custBtn]}
                 onPress={() => handleDevMockLogin('mock-customer')}
                 disabled={loading}
               >
                 <Text style={styles.mockText}>Customer</Text>
               </TouchableOpacity>
-              <TouchableOpacity 
-                style={[styles.mockBtn, styles.adminBtn]} 
+              <TouchableOpacity
+                style={[styles.mockBtn, styles.adminBtn]}
                 onPress={() => handleDevMockLogin('mock-admin')}
                 disabled={loading}
               >
@@ -238,72 +227,73 @@ export default function LoginScreen({ navigation }: any) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#121214',
+    backgroundColor: '#0F172A',
     justifyContent: 'center',
     padding: 20,
   },
   card: {
-    backgroundColor: '#1E1E24',
+    backgroundColor: '#1E293B',
     padding: 24,
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: '#334155',
   },
   title: {
-    fontSize: 28,
-    color: '#6C63FF',
-    fontWeight: 'bold',
+    fontSize: 24,
+    color: '#6366F1',
+    fontWeight: '800',
     textAlign: 'center',
+    letterSpacing: 0.5,
   },
   subtitle: {
-    fontSize: 14,
-    color: '#888',
+    fontSize: 13,
+    color: '#94A3B8',
     textAlign: 'center',
     marginBottom: 24,
     marginTop: 4,
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: '#121214',
-    borderRadius: 8,
+    backgroundColor: '#0F172A',
+    borderRadius: 10,
     padding: 4,
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#2D2D35',
+    borderColor: '#334155',
   },
   tabButton: {
     flex: 1,
     paddingVertical: 10,
     alignItems: 'center',
-    borderRadius: 6,
+    borderRadius: 8,
   },
   activeTab: {
-    backgroundColor: '#6C63FF',
+    backgroundColor: '#6366F1',
   },
   tabText: {
-    color: '#888',
+    color: '#94A3B8',
     fontWeight: 'bold',
     fontSize: 13,
   },
   activeTabText: {
-    color: '#FFF',
+    color: '#FFFFFF',
   },
   form: {
     gap: 12,
   },
   input: {
-    backgroundColor: '#121214',
-    color: '#FFF',
+    backgroundColor: '#0F172A',
+    color: '#F8FAFC',
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#333',
+    borderColor: '#334155',
     fontSize: 14,
   },
   actionButton: {
-    backgroundColor: '#6C63FF',
+    backgroundColor: '#6366F1',
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: 'center',
     marginTop: 8,
   },
@@ -317,7 +307,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   mockDesc: {
-    color: '#888',
+    color: '#94A3B8',
     textAlign: 'center',
     fontSize: 12,
     marginBottom: 20,
@@ -330,15 +320,15 @@ const styles = StyleSheet.create({
   mockBtn: {
     flex: 1,
     padding: 14,
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: 'center',
     marginHorizontal: 6,
   },
   custBtn: {
-    backgroundColor: '#3E3A60',
+    backgroundColor: '#4338CA',
   },
   adminBtn: {
-    backgroundColor: '#6B3A60',
+    backgroundColor: '#BE185D',
   },
   mockText: {
     color: '#FFF',
