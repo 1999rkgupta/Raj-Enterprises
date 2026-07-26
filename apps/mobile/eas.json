@@ -10,6 +10,7 @@
     },
     "preview": {
       "distribution": "internal",
+      "npmCommand": "npm install --legacy-peer-deps",
       "android": {
         "buildType": "apk"
       }
