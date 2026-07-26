@@ -16,15 +16,24 @@ config.resolver.nodeModulesPaths = [
   path.resolve(workspaceRoot, 'node_modules'),
 ];
 
-// 3. Disable hierarchical lookup to prevent Metro from picking up duplicate nested packages
-config.resolver.disableHierarchicalLookup = true;
-
-// 4. Force extraNodeModules mapping for monorepo packages
-config.resolver.extraNodeModules = {
-  react: path.dirname(require.resolve('react/package.json')),
-  'react-native': path.dirname(require.resolve('react-native/package.json')),
-  'react-redux': path.dirname(require.resolve('react-redux/package.json')),
-  '@reduxjs/toolkit': path.dirname(require.resolve('@reduxjs/toolkit/package.json')),
-};
+// 3. Dynamic extraNodeModules Proxy to resolve all packages from either apps/mobile or workspaceRoot
+config.resolver.extraNodeModules = new Proxy(
+  {},
+  {
+    get: (target, name) => {
+      if (typeof name === 'symbol') return undefined;
+      if (target[name]) return target[name];
+      try {
+        return path.dirname(
+          require.resolve(`${name}/package.json`, {
+            paths: [projectRoot, workspaceRoot],
+          })
+        );
+      } catch {
+        return path.join(workspaceRoot, 'node_modules', name);
+      }
+    },
+  }
+);
 
 module.exports = config;
