@@ -2,11 +2,7 @@
   "name": "raj-enterprises",
   "version": "1.0.0",
   "private": true,
-  "devEngines": {
-    "packageManager": {
-      "name": "npm"
-    }
-  },
+  "packageManager": "npm@10.9.0",
   "workspaces": [
     "apps/*",
     "packages/*"
