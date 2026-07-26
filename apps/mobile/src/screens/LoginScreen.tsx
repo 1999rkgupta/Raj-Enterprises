@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { setUser, showToast } from '@raj-enterprises/shared-redux';
 import { setMobileAuthToken, api } from '../api';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 export default function LoginScreen({ navigation }: any) {
   const dispatch = useDispatch();
@@ -119,7 +120,7 @@ export default function LoginScreen({ navigation }: any) {
 
             <TouchableOpacity style={styles.actionButton} onPress={handleFirebaseSignIn} disabled={loading}>
               {loading ? (
-                <ActivityIndicator color="#FFF" size="small" />
+                <LoadingSpinner size="small" color="#FFF" />
               ) : (
                 <Text style={styles.actionButtonText}>SIGN IN TO STORE</Text>
               )}
@@ -181,7 +182,7 @@ export default function LoginScreen({ navigation }: any) {
 
             <TouchableOpacity style={styles.actionButton} onPress={handleFirebaseRegister} disabled={loading}>
               {loading ? (
-                <ActivityIndicator color="#FFF" size="small" />
+                <LoadingSpinner size="small" color="#FFF" />
               ) : (
                 <Text style={styles.actionButtonText}>REGISTER ACCOUNT</Text>
               )}

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { api } from '../api';
 import { showToast, setCart, addGuestItem } from '@raj-enterprises/shared-redux';
 import type { RootState } from '../store';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80';
 
@@ -54,7 +55,7 @@ export default function ProductDetailsScreen({ route, navigation }: any) {
   if (loading) {
     return (
       <View style={styles.loadingCentering}>
-        <ActivityIndicator size="large" color="#6366F1" />
+        <LoadingSpinner message="Loading product details..." size="large" color="#6366F1" />
       </View>
     );
   }

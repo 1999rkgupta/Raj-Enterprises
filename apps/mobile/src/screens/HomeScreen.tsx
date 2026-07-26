@@ -8,12 +8,12 @@ import {
   ScrollView,
   Image,
   TextInput,
-  ActivityIndicator,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { api } from '../api';
 import type { RootState } from '../store';
 import { showToast, setCart, addGuestItem, updateGuestItem, removeGuestItem } from '@raj-enterprises/shared-redux';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80';
 
@@ -167,8 +167,7 @@ export default function HomeScreen({ navigation }: any) {
         {/* Catalog Grid */}
         {loading ? (
           <View style={styles.loadingWrapper}>
-            <ActivityIndicator size="large" color="#6366F1" />
-            <Text style={styles.loadingText}>Fetching live catalog...</Text>
+            <LoadingSpinner message="Fetching live catalog..." size="large" color="#6366F1" />
           </View>
         ) : products.length === 0 ? (
           <View style={styles.emptyWrapper}>
@@ -397,10 +396,6 @@ const styles = StyleSheet.create({
   loadingWrapper: {
     paddingVertical: 40,
     alignItems: 'center',
-  },
-  loadingText: {
-    color: '#94A3B8',
-    marginTop: 12,
   },
   emptyWrapper: {
     paddingVertical: 40,

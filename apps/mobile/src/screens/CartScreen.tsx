@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { api } from '../api';
 import { clearCart, setCart, showToast, updateGuestItem, removeGuestItem } from '@raj-enterprises/shared-redux';
 import type { RootState } from '../store';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=600&q=80';
 
@@ -130,7 +131,7 @@ export default function CartScreen({ navigation }: any) {
   if (loading) {
     return (
       <View style={styles.loadingCentering}>
-        <ActivityIndicator size="large" color="#6366F1" />
+        <LoadingSpinner message="Fetching cart items..." size="large" color="#6366F1" />
       </View>
     );
   }
