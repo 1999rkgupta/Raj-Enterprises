@@ -83,7 +83,7 @@ export function createApiClient(config: ApiClientConfig) {
         client.post<User>('/api/auth/register', data).then(r => r.data),
 
       getMe: () =>
-        client.get<User>('/api/auth/me').then(r => r.data),
+        client.get<User>(`/api/auth/me?t=${Date.now()}`).then(r => r.data),
 
       verifyToken: () =>
         client.post<AuthVerifyResponse>('/api/auth/verify-token').then(r => r.data),
