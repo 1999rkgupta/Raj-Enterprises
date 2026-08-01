@@ -6,7 +6,7 @@
   left: 0;
   right: 0;
   height: var(--navbar-height);
-  background: rgba(10, 10, 15, 0.85);
+  background: var(--bg-secondary);
   backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 1px solid var(--border-subtle);
   z-index: 1000;
@@ -61,8 +61,8 @@
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-2) var(--space-4);
-  background: var(--bg-glass);
-  border: 1px solid var(--border-subtle);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-full);
   color: var(--text-tertiary);
   transition: all var(--transition-fast);
@@ -70,8 +70,8 @@
 
 .navbar-search:focus-within {
   border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.1);
-  background: var(--bg-glass-hover);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
+  background: var(--bg-secondary);
 }
 
 .navbar-search-input {

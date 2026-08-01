@@ -60,9 +60,9 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: rgba(10, 10, 15, 0.65);
+  background: var(--bg-tertiary);
   backdrop-filter: blur(4px);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-default);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,9 +73,10 @@
 }
 
 .wishlist-toggle-btn:hover {
-  background: rgba(10, 10, 15, 0.85);
-  color: var(--color-secondary-light);
+  background: var(--bg-secondary);
+  color: var(--color-secondary);
   transform: scale(1.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .wishlist-toggle-btn.wishlisted {

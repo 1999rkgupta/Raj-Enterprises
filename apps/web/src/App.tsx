@@ -49,6 +49,12 @@ function App() {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
+  // Initialize theme
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }, []);
+
   // Sync token getter interceptor with Mock Auth
   useEffect(() => {
     // Interceptor to inject mock token if present
