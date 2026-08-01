@@ -4,6 +4,8 @@ import { setUser, showToast } from '@raj-enterprises/shared-redux';
 import { api } from '../utils/api';
 import type { RootState } from '../store/store';
 import type { Address } from '@raj-enterprises/shared-types';
+import { OptimizedImage } from '../components/ui/OptimizedImage';
+import { compressImageBeforeUpload } from '../utils/compressImage';
 import './ProfilePage.css';
 
 export function ProfilePage() {
@@ -42,7 +44,8 @@ export function ProfilePage() {
 
     setUploadingImage(true);
     try {
-      const res = await api.users.uploadProfileImage(file);
+      const compressedFile = await compressImageBeforeUpload(file);
+      const res = await api.users.uploadProfileImage(compressedFile);
       dispatch(setUser({ ...user, profile_image_url: res.profile_image_url }));
       dispatch(showToast({ message: 'Profile picture updated!', type: 'success' }));
     } catch (err: any) {
@@ -160,9 +163,10 @@ export function ProfilePage() {
           <h2>Account Information</h2>
           <div className="flex flex-col items-center gap-4" style={{ marginBottom: 'var(--space-6)', marginTop: 'var(--space-4)' }}>
             <div className="profile-pic-container" style={{ position: 'relative', width: '100px', height: '100px' }}>
-              <img
+              <OptimizedImage
                 src={user.profile_image_url || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}
                 alt="Profile"
+                maxWidth={200}
                 style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border-subtle)' }}
               />
               {uploadingImage && (

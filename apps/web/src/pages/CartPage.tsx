@@ -12,6 +12,7 @@ import {
   removeGuestItem,
 } from '@raj-enterprises/shared-redux';
 import PageTransition from '../components/ui/PageTransition';
+import { OptimizedImage } from '../components/ui/OptimizedImage';
 import './CartPage.css';
 
 interface CartPageProps {
@@ -292,12 +293,10 @@ export function CartPage({ onOpenLogin }: CartPageProps) {
                     {/* Image */}
                     <div className="cart-item-img-box">
                       {item.product_image ? (
-                        <img
+                        <OptimizedImage
                           src={item.product_image}
                           alt={item.product_title}
-                          onError={(e) => {
-                            (e.target as HTMLElement).style.display = 'none';
-                          }}
+                          maxWidth={150}
                         />
                       ) : (
                         <span style={{ fontSize: '1.5rem' }}>📦</span>

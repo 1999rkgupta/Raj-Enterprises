@@ -15,6 +15,7 @@
     "@raj-enterprises/shared-types": "*",
     "@reduxjs/toolkit": "^2.3.0",
     "axios": "^1.7.0",
+    "browser-image-compression": "^2.0.2",
     "dexie": "^4.0.0",
     "firebase": "^10.14.0",
     "framer-motion": "^12.42.2",

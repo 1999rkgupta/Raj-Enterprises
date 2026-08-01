@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setUser, showToast } from '@raj-enterprises/shared-redux';
 import { api } from '../../../web/src/utils/api';
 import type { RootState } from '../store';
+import { OptimizedImage } from '../components/OptimizedImage';
+import { compressImageBeforeUpload } from '../utils/compressImage';
 
 function Profile() {
   const dispatch = useDispatch();
@@ -17,7 +19,8 @@ function Profile() {
 
     setUploading(true);
     try {
-      const res = await api.users.uploadProfileImage(file);
+      const compressedFile = await compressImageBeforeUpload(file);
+      const res = await api.users.uploadProfileImage(compressedFile);
       dispatch(setUser({ ...user, profile_image_url: res.profile_image_url }));
       dispatch(showToast({ message: 'Profile picture updated successfully!', type: 'success' }));
     } catch (err: any) {
@@ -35,9 +38,10 @@ function Profile() {
         {/* Profile Picture Section */}
         <div className="flex flex-col items-center gap-4" style={{ borderBottom: '1px solid var(--border-subtle)', paddingBottom: 'var(--space-6)' }}>
           <div style={{ position: 'relative', width: '120px', height: '120px' }}>
-            <img
+            <OptimizedImage
               src={user.profile_image_url || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'}
               alt="Admin Profile"
+              maxWidth={240}
               style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--border-subtle)' }}
             />
             {uploading && (

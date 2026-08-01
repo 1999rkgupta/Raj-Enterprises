@@ -14,6 +14,7 @@ import {
 import { api } from '../../utils/api';
 import { guestCartDB } from '../../utils/indexeddb';
 import { motion } from 'framer-motion';
+import { OptimizedImage } from '../ui/OptimizedImage';
 import './ProductCard.css';
 
 interface ProductCardProps {
@@ -197,7 +198,7 @@ export function ProductCard({ product, onOpenLogin }: ProductCardProps) {
       <Link to={`/product/${product.id}`} className="product-card card" style={{ width: '100%' }}>
         <div className="product-card-image-wrapper">
           {product.images && product.images.length > 0 ? (
-            <img src={product.images[0]} alt={product.title} className="product-card-image" loading="lazy" />
+            <OptimizedImage src={product.images[0]} alt={product.title} className="product-card-image" maxWidth={400} />
           ) : (
             <div className="product-card-placeholder flex justify-center items-center">
               <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

@@ -13,6 +13,7 @@ import {
   updateGuestItem,
 } from '@raj-enterprises/shared-redux';
 import PageTransition from '../components/ui/PageTransition';
+import { OptimizedImage } from '../components/ui/OptimizedImage';
 import './ProductPage.css';
 
 export function ProductPage() {
@@ -161,7 +162,7 @@ export function ProductPage() {
         <div className="product-images-gallery flex flex-col gap-4">
           <div className="main-image-box card-glass flex justify-center items-center">
             {selectedImage ? (
-              <img src={selectedImage} alt={product.title} className="main-product-image" />
+              <OptimizedImage src={selectedImage} alt={product.title} className="main-product-image" maxWidth={800} />
             ) : (
               <div className="placeholder-icon flex justify-center items-center">
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary-light)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -181,7 +182,7 @@ export function ProductPage() {
                   className={`thumbnail-btn card-glass ${selectedImage === img ? 'active-thumb' : ''}`}
                   onClick={() => setSelectedImage(img)}
                 >
-                  <img src={img} alt={`${product.title} thumb ${idx}`} />
+                  <OptimizedImage src={img} alt={`${product.title} thumb ${idx}`} maxWidth={150} />
                 </button>
               ))}
             </div>

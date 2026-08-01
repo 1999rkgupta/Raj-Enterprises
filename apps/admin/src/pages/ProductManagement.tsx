@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 import { showToast } from '@raj-enterprises/shared-redux';
 import { createApiClient } from '@raj-enterprises/api-client';
 import { auth } from '../../../../apps/web/src/firebase';
+import { OptimizedImage } from '../components/OptimizedImage';
+import { compressImageBeforeUpload } from '../utils/compressImage';
 import './ProductManagement.css';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
@@ -179,7 +181,8 @@ export function ProductManagement() {
       const uploadedRelativePaths: string[] = [];
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const res = await api.admin.uploadImage(file);
+        const compressedFile = await compressImageBeforeUpload(file);
+        const res = await api.admin.uploadImage(compressedFile);
         uploadedRelativePaths.push(res.relative_path);
       }
       setImages([...images, ...uploadedRelativePaths]);
@@ -386,7 +389,7 @@ export function ProductManagement() {
                   <td>
                     <div className="flex items-center gap-3">
                       {p.images && p.images.length > 0 ? (
-                        <img src={p.images[0]} alt={p.title} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
+                        <OptimizedImage src={p.images[0]} alt={p.title} maxWidth={100} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
                       ) : (
                         <div style={{ width: '40px', height: '40px', background: 'var(--bg-tertiary)', borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--text-xs)' }}>🎨</div>
                       )}
@@ -584,7 +587,7 @@ export function ProductManagement() {
                 <div className="uploaded-images-row flex gap-2" style={{ marginTop: 'var(--space-2)', flexWrap: 'wrap' }}>
                   {images.map((img, idx) => (
                     <div key={idx} className="image-preview-container" style={{ position: 'relative', width: '80px', height: '80px', border: '1px solid var(--border-default)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
-                      <img src={img} alt="preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <OptimizedImage src={img} alt="preview" maxWidth={150} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       <button type="button" className="delete-img-btn" onClick={() => setImages(images.filter((_, i) => i !== idx))} style={{ position: 'absolute', top: '2px', right: '2px', background: 'rgba(0,0,0,0.6)', border: 'none', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--text-xs)', color: 'white' }}>
                         &times;
                       </button>

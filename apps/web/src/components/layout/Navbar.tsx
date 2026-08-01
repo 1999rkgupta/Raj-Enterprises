@@ -9,6 +9,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../store/store';
+import { OptimizedImage } from '../ui/OptimizedImage';
 import './Navbar.css';
 
 import { signOut } from 'firebase/auth';
@@ -121,7 +122,7 @@ function Navbar({ onOpenLogin }: NavbarProps) {
               title="Profile"
             >
               {user?.profile_image_url ? (
-                <img src={user.profile_image_url} alt={user.name} className="profile-avatar" />
+                <OptimizedImage src={user.profile_image_url} alt={user.name} className="profile-avatar" maxWidth={100} />
               ) : (
                 <div className="profile-initials">{userInitials}</div>
               )}
