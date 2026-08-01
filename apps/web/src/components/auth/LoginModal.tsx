@@ -191,7 +191,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   return (
     <div className="login-modal-overlay" onClick={onClose}>
-      <div className="login-modal-content card-glass animate-scale-in" onClick={e => e.stopPropagation()}>
+      <div className="login-modal-content animate-scale-in" onClick={e => e.stopPropagation()}>
         <button className="login-modal-close" onClick={onClose}>&times;</button>
         
         <div className="login-modal-header">

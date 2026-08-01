@@ -19,7 +19,9 @@
   padding: var(--space-8);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-xl);
-  background: var(--bg-secondary);
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   box-shadow: var(--shadow-xl);
 }
 
