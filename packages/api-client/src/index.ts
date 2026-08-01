@@ -49,13 +49,19 @@ export function createApiClient(config: ApiClientConfig) {
     headers: { 'Content-Type': 'application/json' },
   });
 
-  // Request interceptor: inject Firebase auth token
+  // Request interceptor: inject Firebase auth token and disable caching for GET requests
   client.interceptors.request.use(async (reqConfig) => {
     if (config.getAuthToken) {
       const token = await config.getAuthToken();
       if (token) {
         reqConfig.headers.Authorization = `Bearer ${token}`;
       }
+    }
+    
+    if (reqConfig.method === 'get') {
+      reqConfig.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+      reqConfig.headers['Pragma'] = 'no-cache';
+      reqConfig.headers['Expires'] = '0';
     }
     return reqConfig;
   });
