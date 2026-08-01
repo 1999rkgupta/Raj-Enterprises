@@ -175,7 +175,7 @@
   top: calc(100% + 8px);
   right: 0;
   width: 260px;
-  background: rgba(18, 18, 26, 0.95);
+  background: var(--bg-secondary);
   backdrop-filter: blur(20px);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);

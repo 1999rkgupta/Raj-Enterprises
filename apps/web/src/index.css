@@ -367,18 +367,17 @@ h5 { font-size: var(--text-lg); }
 
 .input {
   padding: var(--space-3) var(--space-4);
-  background: var(--bg-glass);
+  background: var(--bg-tertiary);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   color: var(--text-primary);
   transition: all var(--transition-fast);
-  backdrop-filter: blur(10px);
 }
 
 .input:focus {
   outline: none;
   border-color: var(--border-focus);
-  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+  box-shadow: 0 0 0 3px var(--color-primary-glow);
 }
 
 .input::placeholder {

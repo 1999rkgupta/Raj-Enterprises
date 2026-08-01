@@ -137,6 +137,6 @@
 }
 
 .mock-auth-container .btn:hover {
-  background: rgba(108, 99, 255, 0.1);
+  background: var(--color-primary-glow);
   border-color: var(--color-primary);
 }
