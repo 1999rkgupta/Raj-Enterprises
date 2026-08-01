@@ -285,11 +285,11 @@
   top: var(--navbar-height);
   left: 0;
   right: 0;
-  background: #12121A !important; /* Solid background to prevent behind-screen overlapping */
+  background: var(--bg-secondary) !important; /* Solid background matching current theme */
   border-bottom: 1px solid var(--border-default);
   z-index: 99999;
   padding: var(--space-4) var(--space-6);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.9);
+  box-shadow: var(--shadow-xl);
   animation: slideDown 0.3s ease-out;
 }
 
@@ -343,7 +343,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.55);
+  background: var(--bg-overlay);
   backdrop-filter: blur(4px);
   z-index: 99998;
   animation: fadeIn 0.2s ease-out;
