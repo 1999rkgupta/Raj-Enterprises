@@ -9,6 +9,7 @@ from fastapi import APIRouter, HTTPException, status, Depends, Query
 from datetime import datetime, timezone
 from typing import Optional
 from bson import ObjectId
+import re
 from app.database import database
 from app.dependencies import require_admin, require_super_admin, audit_log
 from app.models.user import UserAdminResponse, AdminCreateRequest, UserRole
@@ -32,11 +33,12 @@ async def list_customers(
     if is_active is not None:
         query["is_active"] = is_active
     if search:
+        safe_search = re.escape(search)
         query["$or"] = [
-            {"name": {"$regex": search, "$options": "i"}},
-            {"mobile": {"$regex": search, "$options": "i"}},
-            {"email": {"$regex": search, "$options": "i"}},
-            {"shop_name": {"$regex": search, "$options": "i"}},
+            {"name": {"$regex": safe_search, "$options": "i"}},
+            {"mobile": {"$regex": safe_search, "$options": "i"}},
+            {"email": {"$regex": safe_search, "$options": "i"}},
+            {"shop_name": {"$regex": safe_search, "$options": "i"}},
         ]
 
     total = await database.users.count_documents(query)
